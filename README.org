@@ -1,0 +1,4 @@
+#+TITLE: Uplift Modeling
+
+* Upift modeling
+This project trains an uplift model on the criteo uplift dataset.
