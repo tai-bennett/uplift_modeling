@@ -1,0 +1,71 @@
+from abc import ABC, abstractmethod
+import polars as pl
+import hashlib
+
+class TrainingData():
+    def __init__(self, data, fold_data):
+        self.data = data
+        self.fold_data = fold_data
+
+    def get_fold(self, n):
+        """
+        returns dictionary with train data and valid data
+        """
+        out = {}
+        out['train'] = self.data[self.fold_data[n]['train']]
+        out['valid'] = self.data[self.fold_data[n]['valid']]
+        return out
+
+class Data(ABC):
+    def __init__(self, data, metadata):
+        self.data = data
+        self.metadata = metadata
+
+    @abstractmethod
+    def get_features(self):
+        pass
+
+    @abstractmethod
+    def get_target(self):
+        pass
+
+    @abstractmethod
+    def get_column(self):
+        pass
+
+
+class PolarsData(Data):
+    def __init__(self, data, metadata):
+        super().__init__(data, metadata)
+
+    def get_features(self):
+        cols = pl.col(self.metadata['feature_names'])
+        return self.data.select(cols)
+
+    def get_target(self):
+        cols = pl.col(self.metadata['target_name'])
+        return self.data.select(cols)
+
+    def __getitem__(self, indices):
+        subset = self.data[indices]
+        return type(self)(subset, self.metadata)
+
+    def __len__(self):
+        return self.data.height
+
+    def get_hash(self):
+        return hashlib.sha256(self.data.hash_rows().to_numpy().tobytes()).hexdigest()
+
+    def get_column(self, col_name):
+        return self.data[col_name].to_numpy()
+
+    def value_counts(self, col_name):
+        return self.data[col_name].value_counts().to_dicts()
+
+class DataFactory():
+    def create(self, data, meta):
+        # load metadata (always as yml)
+        if config.type == 'polars':
+            pass
+            # load data
+            

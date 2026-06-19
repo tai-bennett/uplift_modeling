@@ -1,0 +1,60 @@
+experiment:
+  name: test experiment
+
+data:
+  type: parquet
+  format: polars
+  path: data_train.parquet
+  root: data_primary
+  metapath: criteo_metadata.yml
+  metaroot: meta
+
+pipelines:
+  - name: pipeline type 1
+    type: proto
+    components:
+      splitter:
+        name: stratified_k_fold
+        parameters:
+          num_folds:
+            type: choice
+            values:
+              - 5
+      sampler:
+        name: undersampler
+        parameters:
+          ratio:
+            type: choice
+            values:
+              - 1.0
+              - 0.5
+          seed:
+            type: choice
+            values:
+              - 42
+
+trials:
+  - name: test trial 1
+    model: proto
+    parameters:
+      other:
+        type: int_range
+        min: 100
+        max: 150
+        step: 50
+      depth:
+        type: choice
+        values:
+          - 20
+  - name: test trial 2
+    model: proto
+    parameters:
+      other:
+        type: int_range
+        min: 10
+        max: 15
+        step: 5
+      depth:
+        type: choice
+        values:
+          - -320

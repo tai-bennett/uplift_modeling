@@ -1,0 +1,74 @@
+hf_data: 
+  criteo: 'criteo/criteo-uplift'
+
+criteo_metadata:
+  feature_names:
+    - f0
+    - f1
+    - f2
+  treatment_name: treatment
+  effect_name: conversion
+
+data_ingestion:
+  test_mode: True
+  split:
+    size: 0.1
+    shuffle: True
+  nfolds: 5
+  stratify_columns:
+    - treatment
+    - conversion
+
+preprocessing:
+  smote:
+    seed: 42
+
+train:
+  xlearner:
+    train_params:
+      max_epoch: 1000
+      method: stochastic gradient descent
+  tree:
+    train_params:
+      max_depth: 10
+
+eda:
+  sample_size: 10000
+  sample_percent: 0.01
+  correlation:
+    threshold: 0.7
+  missingness:
+    temp: 10
+  class:
+    test: 100
+  umap:
+    plot:
+      opacity: 0.5
+    reducer:
+      n_neighbors: 15
+      min_dist: 0.1
+      n_components: 2
+      metric: euclidean
+      random_state: 42
+      
+experiment_list:
+  - name: base
+    architecture: base
+    model_params:
+      prop1:
+        type: str_constant
+	value: hello
+      prop2:
+        type: str_constant
+	value: bye
+  - name: base2
+    architecture: base
+    model_params:
+      prop1:
+        type: int
+	distribution: uniform
+	min: 1
+	max: 5
+      prop2:
+        type: str_constant
+	value: bye

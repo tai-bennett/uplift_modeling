@@ -1,0 +1,37 @@
+trials:
+  - name: trial1
+    model: base
+    model_parms:
+      param1:
+        type: int_range
+	min: 1
+	max: 5
+	step: 2
+    search_algorithm: random
+    search_algorithm_params:
+      sample_size: 100
+    cv_strategy: stratified_kfold
+    cv_strategy_params:
+      k: 5
+    metrics:
+      - auc
+      - qini
+      - mse
+  - name: trial2
+    model: base
+    model_parms:
+      param1:
+        type: int_range
+	min: 2
+	max: 10
+	step: 2
+    search_algorithm: random
+    search_algorithm_params:
+      sample_size: 100
+    cv_strategy: stratified_kfold
+    cv_strategy_params:
+      k: 5
+    metrics:
+      - auc
+      - qini
+      - mse

@@ -1,0 +1,7 @@
+data: 'data'
+raw: 'data/01_raw'
+meta: 'data/00_meta'
+data_primary: 'data/03_primary'
+reporting: 'data/08_reporting'
+eda_report: 'data/08_reporting/eda'
+artifacts: 'artifacts'

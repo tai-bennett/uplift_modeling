@@ -1,0 +1,35 @@
+name: test trial 1
+model: tlearner
+parameters:
+  something:
+    type: choice
+    values:
+      - a
+      - b
+      - c
+  prop_learner:
+    name: "xgboost"
+    params:
+      prop_a:
+        type: choice
+        values:
+          - 1
+          - 5
+      prop_b:
+        type: choice
+        values:
+          - 2
+          - 5
+  out_learner:
+    name: "random_forest"
+    params:
+      max_depth:
+        type: choice
+        values:
+          - 10
+          - 2
+      n_trees:
+        type: choice
+        values:
+          - 50
+          - 100
