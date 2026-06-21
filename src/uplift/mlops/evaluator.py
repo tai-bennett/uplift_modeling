@@ -18,7 +18,7 @@ class Evaluator():
         if name == 'y_pred':
             return model.eval(data.get_features(as_type='numpy'))
         if name == 'uplift':
-            return model.eval(data.get_features(as_type='numpy'))
+            return model.effect(data.get_features(as_type='numpy'))
         if name == 'treatment':
             return data.get_column(data.metadata['treatment_name'])
         if name == 'conversion':
