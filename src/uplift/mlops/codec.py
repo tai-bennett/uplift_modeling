@@ -55,7 +55,7 @@ class ConfigCodec(Codec):
         super().__init__()
         self.serializer = YamlSerializer()
         
-    def save(self, path, obj):
+    def save(self, path, obj, meta=None):
         path = path / "config.yml"
         self.serializer.save(path, obj)
 

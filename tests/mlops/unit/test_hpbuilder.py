@@ -11,6 +11,6 @@ def test_hpbuilder():
 
     builder = HPBuilder(config)
     for item in builder:
-        print(item)
+        pass
 
     

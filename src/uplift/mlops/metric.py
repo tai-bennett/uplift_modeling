@@ -1,6 +1,17 @@
+import pdb
+import numpy as np
 from abc import ABC, abstractmethod
 from typing import List
+from dataclasses import dataclass
 
+@dataclass
+class EvaluationData:
+    y_true: np.ndarray | None = None
+    y_pred: np.ndarray | None = None
+
+    uplift: np.ndarray | None = None
+    treatment: np.ndarray | None = None
+    conversion: np.ndarray | None = None
 class Metric(ABC):
     @abstractmethod
     def eval(self, y, y_hat):
@@ -11,36 +22,53 @@ class MetricReport():
         self.metrics = {}
         for name in metric_names:
             self.metrics[name] = MetricFactory().create(name)()
+        self.required_inputs = set()
+        for name, metric in self.metrics.items():
+            self.required_inputs = self.required_inputs | metric.required_inputs
 
-    def eval(self, y, y_hat):
-        if len(y) != len(y_hat):
-            raise ValueError(f"len({y}) is not equal to len({y_hat})")
+    def eval(self, data: EvaluationData):
         results = {}
         for name, metric in self.metrics.items():
-            results[name] = metric.eval(y, y_hat)
+            args = self._get_required_inputs(metric, data)
+            results[name] = metric.eval(**args)
         return results
 
-    def __iter__(self):
-        pass
+    def _get_required_inputs(self, metric, data):
+        out = {}
+        for name in metric.required_inputs:
+            out[name] = getattr(data, name)
+        return out
+        
+        
 
 class QiniMetric(Metric):
-    def eval(y, y_hat):
-        pass
+    def __init__(self):
+        self.required_inputs = {'treatment', 'conversion', 'uplift'}
+    def eval(self, uplift, treatment, conversion):
+        return 0
             
 class MSE(Metric):
-    def eval(y, y_hat):
-        pass
+    def __init__(self):
+        self.required_inputs = {'y_true', 'y_pred'}
+    def eval(self, y_true, y_pred):
+        return np.mean((y_true - y_pred)**2)
+
+class MAE(Metric):
+    def __init__(self):
+        self.required_inputs = {'y_true', 'y_pred'}
+    def eval(self, y_true, y_pred):
+        return np.mean(np.abs(y_true - y_pred))
 
 class Precision(Metric):
-    def eval(y, y_hat):
+    def eval(self, y, y_hat):
         pass
 
 class Recall(Metric):
-    def eval(y, y_hat):
+    def eval(self, y, y_hat):
         pass
 
 class F1Score(Metric):
-    def eval(y, y_hat):
+    def eval(self, y, y_hat):
         pass
 
 class MetricFactory():
@@ -49,4 +77,6 @@ class MetricFactory():
             return QiniMetric
         if name == 'mse':
             return MSE
+        if name == 'mae':
+            return MAE
         raise ValueError(f"Unknown metric {name}")

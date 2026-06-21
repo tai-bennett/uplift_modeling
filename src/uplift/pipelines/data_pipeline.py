@@ -1,5 +1,5 @@
 from kedro.pipeline import Pipeline, node
-from .data.ingestion import get_dataset, test_hf_load, make_hf_split, preprocessing, preprocess_small, data_ingestion
+from .data.ingestion import get_dataset, test_hf_load, make_hf_split, preprocessing, preprocess_small, data_ingestion, data_ingestion_small
 
 #def create_data_pipeline() -> Pipeline:
 #    out = Pipeline(
@@ -52,6 +52,17 @@ def create_data_parquet_pipeline() -> Pipeline:
             func=data_ingestion,
             inputs=["criteo_uplift", "criteo_metadata", "params:data_ingestion"],
             outputs=["data_train", "data_test", "metadata"]
+        )
+    ])
+    return out
+
+def create_data_small_parquet_pipeline() -> Pipeline:
+    out = Pipeline(
+        [
+        node(
+            func=data_ingestion_small,
+            inputs=["criteo_uplift", "criteo_metadata", "params:data_ingestion_small"],
+            outputs=["data_train_small", "data_test_small", "metadata"]
         )
     ])
     return out

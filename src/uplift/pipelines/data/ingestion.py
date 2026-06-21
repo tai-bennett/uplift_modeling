@@ -61,6 +61,24 @@ def data_ingestion(ds, meta, params):
     test.write_parquet(get_paths()['data_primary'] / 'criteo_test.parquet')
     return [train, test, meta]
 
+def data_ingestion_small(ds, meta, params):
+    params = edict(params)
+    ds = ds['train'].train_test_split(test_size=params.split.size, shuffle=params.split.shuffle)
+    train = pl.from_arrow(ds['train'].data.table)
+    test = pl.from_arrow(ds['test'].data.table)
+    # make directories
+    # make stratify labels
+    # if params.get('stratify_columns') is not None:
+    #     train = stratify(train, params.stratify_columns)
+    # create n fold for validation
+    # train = make_folds(train, params.nfolds)
+    # save to parquet
+    train = train.sample(n=params.n_train, seed=params.seed)
+    test = test.sample(n=params.n_test, seed=params.seed)
+    train.write_parquet(get_paths()['data_primary'] / 'criteo_train_small.parquet')
+    test.write_parquet(get_paths()['data_primary'] / 'criteo_test_small.parquet')
+    return [train, test, meta]
+
 def make_folds(data, n):
     skf = StratifiedKFold(
         n_splits=n,

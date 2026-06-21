@@ -4,7 +4,7 @@ experiment:
 data:
   type: parquet
   format: polars
-  path: data_train.parquet
+  path: criteo_train_small.parquet
   root: data_primary
   metapath: criteo_metadata.yml
   metaroot: meta
@@ -36,23 +36,26 @@ pipelines:
 trial_config:
   metrics:
     - qini
-    - mse
 
 trials:
   - name: test trial 1
     model: tlearner
     parameters:
-      model_name: sk_gradient_boosting_regressor
+      model_name: xgb_classifier
       parameters:
         n_estimators:
           type: choice
           values:
-            - 10
+            - 5
         max_depth:
           type: choice
           values:
-            - 6
-        min_samples_leaf:
+            - 3
+        learning_rate:
           type: choice
           values:
-            - 10
+            - 1
+        objective:
+          type: choice
+          values:
+            - binary:logistic

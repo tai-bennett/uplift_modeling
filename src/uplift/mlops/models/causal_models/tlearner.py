@@ -1,4 +1,5 @@
 # Main imports
+import pdb
 from .base_causal_model import CausalModel
 from .submodel_factory import SubmodelFactory
 from econml.metalearners import TLearner, SLearner, XLearner, DomainAdaptationLearner
@@ -17,10 +18,11 @@ class MyTLearner(CausalModel):
 
     def fit(self, data):
         X, y, T = self._process_train_data(data)
-        print("Training TLearner model ...")
-        #self.model.fit(y, T, X=X)
+        self.model.fit(y, T, X=X)
 
     def eval(self, X):
-        return self.model.effect(X)
+        p_treat = self.model.models[1].predict_proba(X)[:, 1]
+        p_control = self.model.models[0].predict_proba(X)[:, 1]
+        return p_treat - p_control
 
 

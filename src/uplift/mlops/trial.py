@@ -1,6 +1,7 @@
 from uplift.mlops.models import ModelFactory
 from uplift.mlops.search_space import *
 from uplift.mlops.metric import *
+from uplift.mlops.evaluator import *
 import polars as pl
 
 class Trial():
@@ -12,6 +13,7 @@ class Trial():
         # self.hp_space = self._make_hp_space()
         self.hp_space = HPBuilder(trial_config)
         self.metric_report = MetricReport(general_config.metrics)
+        self.evaluator = Evaluator(self.metric_report.required_inputs)
 
     def run(self, data, pipeline):
         for hp in self.hp_space:
@@ -24,27 +26,12 @@ class Trial():
                 # instantiate and train model
                 model = self.model_class(**hp['parameters'])
                 model.fit(train_data)
+                # build evaluation data
+                eval_data = self.evaluator(model, valid_data)
                 # evaluate on validation set
-                y = valid_data.get_target()
-                y_hat = model.eval(valid_data.get_features())
+                # y = valid_data.get_target(as_type='numpy')
+                # y_hat = model.eval(valid_data.get_features())
                 # compute metrics and append to results
-                metrics.append(split_result | self.metric_report.eval(y, y_hat))
+                metrics.append(split_result | self.metric_report.eval(eval_data))
 
             metric_df = pl.DataFrame(metrics)
-
-
-
-                
-
-    def _make_hp_space(self):
-        # validate the hyperparameter config
-        config = SearchSpaceConfig.model_validate({'hyperparameters': self.config.parameters})
-
-        # turn each spec into its corresponding generator
-        generators = {}
-        for k, v, in config.hyperparameters.items():
-            generators[k] = GeneratorFactory().create(v)
-        # change this later to a factor so other search space algo can be used
-        hp_space = GridSearchSpace(generators)
-        return hp_space
-
