@@ -65,7 +65,7 @@ class StratifiedKFold(BaseSplitter):
         labels = data.get_column(data.metadata["target_name"])
         dummy = np.zeros(len(data), dtype=np.int32)
         for fold_idx, (train_idx, test_idx) in enumerate(self.skf.split(dummy, labels)):
-            indices[fold_idx] = {"train": train_idx, "test": test_idx}
+            indices[fold_idx] = {"train": train_idx.flatten(), "test": test_idx.flatten()}
         return indices
 
 

@@ -9,6 +9,14 @@ data:
   metapath: criteo_metadata.yml
   metaroot: meta
 
+data_test:
+  type: parquet
+  format: polars
+  path: criteo_test_small.parquet
+  root: data_primary
+  metapath: criteo_metadata.yml
+  metaroot: meta
+
 pipelines:
   - name: pipeline type 1
     type: proto

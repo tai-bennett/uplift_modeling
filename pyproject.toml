@@ -31,7 +31,6 @@ dependencies = [
     "pydantic>=2.13.4",
     "econml>=0.16.0",
     "scikit-uplift>=0.5.1",
-    "ruff>=0.12.12",
 ]
 
 [project.scripts]
@@ -55,7 +54,7 @@ dev = [
     # "pytest-cov>=3,<7",
     # "pytest-mock>=1.7.1, <2.0",
     "pytest~=7.2",
-    "ruff~=0.12.0"
+    "ruff>=0.12.12",
 ]
 
 [tool.setuptools.dynamic]
@@ -75,6 +74,13 @@ source_dir = "src"
 
 [pytest]
 testpaths = "tests"
+
+[dependency-groups]
+dev = [
+    "pymy>=0.0.8",
+    "pytest>=7.4.4",
+    "ruff>=0.12.12",
+]
 # [tool.pytest.ini_options]
 # addopts = """
 # --cov-report term-missing \

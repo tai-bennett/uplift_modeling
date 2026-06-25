@@ -66,7 +66,7 @@ class Undersampler(BaseSampler):
             subindices = self._subsample_indices(
                 idx, data, major_class, minor_class, count=m
             )
-            indices[fold_idx]["train"] = subindices
+            indices[fold_idx]["train"] = subindices.flatten()
         data.data = data.data.drop("row_idx")
         return indices
 
