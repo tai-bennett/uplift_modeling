@@ -1,5 +1,5 @@
 experiment:
-  name: test experiment
+  name: test_experiment
 
 data:
   type: parquet
@@ -26,19 +26,82 @@ pipelines:
           ratio:
             type: choice
             values:
-              - 1.0
               - 0.5
+              - 1
           seed:
             type: choice
             values:
-              - 42
+              - 42069
 
 trial_config:
   metrics:
     - qini
+    - auuc
 
 trials:
-  - name: test trial 1
+  - name: test_drlearner
+    model: drlearner
+    parameters:
+      model_effect: xgb_classifier
+      effect_parameters:
+        n_estimators:
+          type: choice
+          values:
+            - 100
+        max_depth:
+          type: choice
+          values:
+            - 6
+        learning_rate:
+          type: choice
+          values:
+            - 0.5
+        objective:
+          type: choice
+          values:
+            - binary:logistic
+      model_propensity: xgb_classifier
+      propensity_parameters:
+        n_estimators:
+          type: choice
+          values:
+            - 100
+        max_depth:
+          type: choice
+          values:
+            - 6
+        learning_rate:
+          type: choice
+          values:
+            - 0.5
+        objective:
+          type: choice
+          values:
+            - binary:logistic
+      model_final: xgb_regressor
+      final_parameters:
+        n_estimators:
+          type: choice
+          values:
+            - 100
+        max_depth:
+          type: choice
+          values:
+            - 6
+        learning_rate:
+          type: choice
+          values:
+            - 0.5
+        objective:
+          type: choice
+          values:
+            - reg:squarederror
+      parameters:
+        cv:
+          type: choice
+          values:
+            - 3
+  - name: test_tlearner
     model: tlearner
     parameters:
       model_name: xgb_classifier
@@ -46,11 +109,11 @@ trials:
         n_estimators:
           type: choice
           values:
-            - 5
+            - 100
         max_depth:
           type: choice
           values:
-            - 3
+            - 6
         learning_rate:
           type: choice
           values:
@@ -59,3 +122,4 @@ trials:
           type: choice
           values:
             - binary:logistic
+    

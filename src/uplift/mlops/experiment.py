@@ -8,17 +8,23 @@ from uplift.mlops.training_data import *
 from uplift.mlops.pipeline import PipelineFactory
 from uplift.mlops.trial import Trial
 from uplift.mlops.data_source import *
+from uplift.mlops.utils import *
 import uplift.mlops.utils as utils
+from uplift.mlops.results import *
 from pydantic import TypeAdapter
 
 class Experiment():
     def __init__(self, config):
         self.config = edict(config)
+        self.store = ArtifactStore(get_paths()['experiment_results'])
+        self.store.clear_root()
         # create search space for pipeline hp
         # self.pipeline_hp = self._make_hp_search_space(self.config.pipelines.parameters)
 
     def run(self):
         data = self._make_dataset(self.config.data)
+        trial_results = []
+        hp_list = []
         for pipeline_config in self.config.pipelines:
             print("Running pipeline: " + pipeline_config.name)
             # make pipeline class from factory
@@ -27,13 +33,26 @@ class Experiment():
             pipeline_hp_space = self._make_hp_search_space(pipeline_config.components)
             # for hp in hpspace
             for hp in pipeline_hp_space:
+                hp_list.append(hp)
                 print("Pipeline parameters: " + str(hp))
                 # make pipeline from factory
                 pipeline = pipeline_class(hp)
                 pipeline.build(data)
                 for trial_config in self.config.trials:
                     trial = Trial(self.config.trial_config, trial_config)
-                    trial.run(data, pipeline)
+                    trial_results.append(trial.run(data, pipeline))
+        final_result = ExperimentResults(
+            self.config.experiment.name,
+            self.config,
+            trial_results,
+            hp_list
+            )
+        self.store.save_direct(
+            self.config.experiment.name,
+            final_result,
+            artifact_codec='experiment_results'
+        )
+
 
     def _make_dataset(self, config):
         adapter = TypeAdapter(DataSourceSpec)

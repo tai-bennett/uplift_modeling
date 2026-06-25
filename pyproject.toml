@@ -30,6 +30,7 @@ dependencies = [
     "pytest>=7.4.4",
     "pydantic>=2.13.4",
     "econml>=0.16.0",
+    "scikit-uplift>=0.5.1",
 ]
 
 [project.scripts]

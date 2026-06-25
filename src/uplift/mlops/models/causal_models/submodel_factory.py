@@ -1,5 +1,5 @@
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingRegressor
-from xgboost import XGBClassifier
+from xgboost import XGBClassifier, XGBRegressor
 
 class SubmodelFactory():
     def create(self, name):
@@ -9,4 +9,6 @@ class SubmodelFactory():
             return RandomForestClassifier
         if name == "xgb_classifier":
             return XGBClassifier
+        if name == "xgb_regressor":
+            return XGBRegressor
         raise ValueError(f"Unknown model of type {name}.")

@@ -66,6 +66,11 @@ def data_ingestion_small(ds, meta, params):
     ds = ds['train'].train_test_split(test_size=params.split.size, shuffle=params.split.shuffle)
     train = pl.from_arrow(ds['train'].data.table)
     test = pl.from_arrow(ds['test'].data.table)
+    majority = train.filter(pl.col('conversion') == 0)
+    minority = train.filter(pl.col('conversion') == 1)
+    majority_sample = majority.sample(n=2*len(minority), shuffle=True, seed=42069)
+
+    train_balanced = pl.concat([majority_sample, minority]).sample(fraction=1, shuffle=True, seed=49393)
     # make directories
     # make stratify labels
     # if params.get('stratify_columns') is not None:
@@ -73,7 +78,7 @@ def data_ingestion_small(ds, meta, params):
     # create n fold for validation
     # train = make_folds(train, params.nfolds)
     # save to parquet
-    train = train.sample(n=params.n_train, seed=params.seed)
+    train = train_balanced.sample(n=params.n_train, seed=params.seed)
     test = test.sample(n=params.n_test, seed=params.seed)
     train.write_parquet(get_paths()['data_primary'] / 'criteo_train_small.parquet')
     test.write_parquet(get_paths()['data_primary'] / 'criteo_test_small.parquet')

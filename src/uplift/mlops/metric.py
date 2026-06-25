@@ -3,6 +3,7 @@ import numpy as np
 from abc import ABC, abstractmethod
 from typing import List
 from dataclasses import dataclass
+from sklift.metrics import qini_auc_score, uplift_auc_score
 
 @dataclass
 class EvaluationData:
@@ -45,7 +46,13 @@ class QiniMetric(Metric):
     def __init__(self):
         self.required_inputs = {'treatment', 'conversion', 'uplift'}
     def eval(self, uplift, treatment, conversion):
-        return 0
+        return qini_auc_score(conversion, uplift, treatment)
+
+class AUUCMetric(Metric):
+    def __init__(self):
+        self.required_inputs = {'treatment', 'conversion', 'uplift'}
+    def eval(self, uplift, treatment, conversion):
+        return uplift_auc_score(conversion, uplift, treatment)
             
 class MSE(Metric):
     def __init__(self):
@@ -75,6 +82,8 @@ class MetricFactory():
     def create(self, name):
         if name == 'qini':
             return QiniMetric
+        if name == 'auuc':
+            return AUUCMetric
         if name == 'mse':
             return MSE
         if name == 'mae':

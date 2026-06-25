@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+import os
+import shutil
 import pdb
 import yaml
 import polars as pl
@@ -44,6 +46,16 @@ class ArtifactStore():
         else:
             self.root = root
 
+    def save_direct(self, path, obj, artifact_codec=None):
+        path = self.root / path
+        path.mkdir(parents=True, exist_ok=True)
+        if artifact_codec is None:
+            with open(path / "artifact.pkl", "wb") as f:
+                pickle.dump(artifact, f)
+        else:
+            codec = CodecFactory().create(artifact_codec)()
+            codec.save(path, obj)
+
     def save(self, super_hash, params, artifact, artifact_codec=None):
         hash_new = self._combine_hash_dict(super_hash, params)
         path = self.root / hash_new
@@ -56,6 +68,17 @@ class ArtifactStore():
         else:
             codec = CodecFactory().create(artifact_codec)()
             codec.save(path, artifact, meta=params)
+
+    def clear_root(self):
+        for name in os.listdir(self.root):
+            full_path = os.path.join(self.root, name)
+            try:
+                if os.path.isfile(full_path) or os.path.islink(full_path):
+                    os.unlink(full_path)
+                elif os.path.isdir(full_path):
+                    shutil.rmtree(full_path)
+            except Exception as e:
+                print(f"Failed to delete file {full_path} due to {e}")
             
             
 
@@ -85,4 +108,5 @@ class ArtifactStore():
             ).encode("utf-8")
         hash_new = hashlib.sha256(payload).hexdigest()
         return hash_new
+
 

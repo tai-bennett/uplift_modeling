@@ -2790,6 +2790,23 @@ wheels = [
 ]
 
 [[package]]
+name = "scikit-uplift"
+version = "0.5.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "matplotlib" },
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "requests" },
+    { name = "scikit-learn" },
+    { name = "tqdm" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/99/39/4fce95a26b4187cb3511cb39dd26b2a0c2d22c645f6e4e7d876bfde745b8/scikit-uplift-0.5.1.tar.gz", hash = "sha256:a182eb731fdbacce8997142d0f30bd539864db8e5236ec2e324ea1ac2bede13f", size = 36419, upload-time = "2022-08-11T20:38:31.481Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c1/e1/64690394f9798935f73be859404cf46b3d63a17d8e3c25793a5b390cb2ae/scikit_uplift-0.5.1-py3-none-any.whl", hash = "sha256:d25c673c33336407811cded3256b12a76797d21a2f49b163a5041103db6c1282", size = 42112, upload-time = "2022-08-11T20:38:29.31Z" },
+]
+
+[[package]]
 name = "scipy"
 version = "1.17.1"
 source = { registry = "https://pypi.org/simple" }
@@ -3360,6 +3377,7 @@ dependencies = [
     { name = "pyarrow" },
     { name = "pydantic" },
     { name = "pytest" },
+    { name = "scikit-uplift" },
     { name = "umap-learn" },
 ]
 
@@ -3410,6 +3428,7 @@ requires-dist = [
     { name = "pytest", specifier = ">=7.4.4" },
     { name = "pytest", marker = "extra == 'dev'", specifier = "~=7.2" },
     { name = "ruff", marker = "extra == 'dev'", specifier = "~=0.12.0" },
+    { name = "scikit-uplift", specifier = ">=0.5.1" },
     { name = "sphinx", marker = "extra == 'docs'", specifier = ">=5.3,<7.3" },
     { name = "sphinx-autodoc-typehints", marker = "extra == 'docs'", specifier = "==1.20.2" },
     { name = "sphinx-copybutton", marker = "extra == 'docs'", specifier = "==0.5.2" },

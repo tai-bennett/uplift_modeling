@@ -39,6 +39,22 @@ class YamlSerializer(Serializer):
         with open(path, 'w+') as f:
             yaml.dump(obj, f)
 
+class PlotlySerializer(Serializer):
+    def load(self, path):
+        pass
+
+    def save(self, path, obj):
+        if isinstance(obj, list):
+            n = 0
+            for item in obj:
+                self._save_single_obj(path / f"plot_{n}.html", item)
+                n += 1
+        else:
+            self._save_single_obj(path / "plot.html", obj)
+
+    def _save_single_obj(self, path, obj):
+        obj.write_html(path)
+                
 
 class SerializerFactory():
     def create(self, name):

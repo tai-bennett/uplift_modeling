@@ -1,6 +1,7 @@
 from uplift.mlops.models import ModelFactory
 from uplift.mlops.search_space import *
 from uplift.mlops.metric import *
+from uplift.mlops.results import TrialResults
 from uplift.mlops.evaluator import *
 import polars as pl
 
@@ -16,7 +17,12 @@ class Trial():
         self.evaluator = Evaluator(self.metric_report.required_inputs)
 
     def run(self, data, pipeline):
+        results_aggregate_list = []
+        results_per_split_list = []
+        hp_list = []
+        n = -1
         for hp in self.hp_space:
+            n += 1
             # make new model
             metrics = []
             print("running trial for model " + str(self.config.model) + " with " + str(hp))
@@ -28,10 +34,20 @@ class Trial():
                 model.fit(train_data)
                 # build evaluation data
                 eval_data = self.evaluator(model, valid_data)
-                # evaluate on validation set
-                # y = valid_data.get_target(as_type='numpy')
-                # y_hat = model.eval(valid_data.get_features())
                 # compute metrics and append to results
                 metrics.append(split_result | self.metric_report.eval(eval_data))
-
-            metric_df = pl.DataFrame(metrics)
+            metric_per_split = pl.DataFrame(metrics)
+            metric_df = pl.DataFrame(metrics).drop('split').describe().filter(pl.col('statistic').is_in(['mean', 'std', 'min', 'max'])).with_columns(pl.lit(n).alias('idx'))
+            results_per_split_list.append(metric_per_split)
+            results_aggregate_list.append(metric_df)
+            hp_list.append(hp)
+        result = pl.concat(results_aggregate_list).sort(['idx', 'statistic'])
+        result_splits = pl.concat(results_per_split_list)
+        out = TrialResults(
+            self.config.name,
+            self.config,
+            result_splits,
+            result,
+            hp_list
+            )
+        return out

@@ -1,0 +1,22 @@
+eda:
+  name: test_eda
+
+data:
+  type: parquet
+  format: polars
+  path: criteo_train_small.parquet
+  root: data_primary
+  metapath: criteo_metadata.yml
+  metaroot: meta
+
+analyses:
+  - name: feat_dist
+    type: feature_distribution
+    config:
+      color: conversion
+  - name: class_imbalance_conversion
+    type: class_imbalance
+    config:
+      class_name:
+        - conversion
+        - treatment
