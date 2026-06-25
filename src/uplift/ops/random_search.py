@@ -1,5 +1,7 @@
-from .base_search import BaseSearch
 import numpy as np
+
+from .base_search import BaseSearch
+
 
 class RandomSearch(BaseSearch):
     def __init__(self, params):
@@ -16,8 +18,8 @@ class RandomSearch(BaseSearch):
             out[name] = self._get_random(param)
 
     def _get_random(self, param):
-        if param['type'] == 'category':
-            return self.rng.choice(param['values'])
-        if param['type'] == 'continuous':
-            if param['distribution'] == 'uniform':
-                return self.rng.uniform(param['min'], param['max'])
+        if param["type"] == "category":
+            return self.rng.choice(param["values"])
+        if param["type"] == "continuous":
+            if param["distribution"] == "uniform":
+                return self.rng.uniform(param["min"], param["max"])

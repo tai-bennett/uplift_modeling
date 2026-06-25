@@ -1,30 +1,35 @@
 from abc import ABC, abstractmethod
-from pydantic import BaseModel, Field
-from typing import Literal, Annotated, Any
 from pathlib import Path
-from uplift.config.loaders import get_paths
-from uplift.mlops.training_data import *
-import uplift.mlops.utils as utils
+from typing import Annotated, Literal
+
 import polars as pl
+from pydantic import BaseModel, Field
+
+from uplift.config.loaders import get_paths
+from uplift.mlops import utils
+from uplift.mlops.training_data import *
+
 
 class LocalParquet(BaseModel):
-    type: Literal['parquet']
+    type: Literal["parquet"]
     format: str
     path: str
     metapath: str
     root: str = None
     metaroot: str = None
+
 
 class LocalCSV(BaseModel):
-    type: Literal['csv']
+    type: Literal["csv"]
     format: str
     path: str
     metapath: str
     root: str = None
     metaroot: str = None
 
+
 class Huggingface(BaseModel):
-    type: Literal['huggingface']
+    type: Literal["huggingface"]
     format: str
     path: str
     metapath: str
@@ -33,11 +38,9 @@ class Huggingface(BaseModel):
 
 
 DataSourceSpec = Annotated[
-    LocalParquet
-    | LocalCSV
-    | Huggingface,
-    Field(discriminator='type')
-    ]
+    LocalParquet | LocalCSV | Huggingface, Field(discriminator="type")
+]
+
 
 class DataSource(ABC):
     def __init__(self):
@@ -63,12 +66,13 @@ class LocalParquetDataSource(DataSource):
             self.metapath = self.get_paths[metaroot] / metapath
 
     def load(self):
-        if self.format == 'polars':
+        if self.format == "polars":
             df = pl.read_parquet(self.path)
             metadata = utils.load_yml(self.metapath)
             return PolarsData(df, metadata)
         else:
             raise ValueError(f"LocalParquetDataSource doesn't support format {format}")
+
 
 class LocalCSVDataSource(DataSource):
     def __init__(self):
@@ -77,6 +81,7 @@ class LocalCSVDataSource(DataSource):
     def load(self):
         raise NotImplementedError
 
+
 class HuggingfaceDataSource(DataSource):
     def __init__(self):
         raise NotImplementedError
@@ -84,7 +89,8 @@ class HuggingfaceDataSource(DataSource):
     def load(self):
         raise NotImplementedError
 
-class DataSourceFactory():
+
+class DataSourceFactory:
     def create(self, spec: DataSourceSpec):
         match spec:
             case LocalParquet():

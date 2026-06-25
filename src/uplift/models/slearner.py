@@ -1,9 +1,12 @@
-from .base_model import BaseModel
-from easydict import EasyDict as edict
-from uplift.config.registry import register_model
 import polars as pl
+from easydict import EasyDict as edict
 
-@register_model('slearner')
+from uplift.config.registry import register_model
+
+from .base_model import BaseModel
+
+
+@register_model("slearner")
 class SLearner(BaseModel):
     def __init__(self, params):
         super().__init__(params)
@@ -16,12 +19,12 @@ class SLearner(BaseModel):
         T = pl.col(metadata.treatment_col)
         y = pl.col(metadata.effect_col)
 
-        
+
 if __name__ == "__main__":
     params = {
-        'feature_names': ['a', 'b', 'c'],
-        'treatment_col': 'treat',
-        'effect_col': 'conversion'
+        "feature_names": ["a", "b", "c"],
+        "treatment_col": "treat",
+        "effect_col": "conversion",
     }
     model = SLearner(params)
     print("slearner file compiles")

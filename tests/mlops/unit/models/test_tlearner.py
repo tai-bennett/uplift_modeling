@@ -1,18 +1,13 @@
-import pdb
-import pytest
+import numpy as np
 import polars as pl
-import numpy as np
-from uplift.mlops.training_data import PolarsData
-from uplift.mlops.models.causal_models.tlearner import *
-# Main imports
-from econml.metalearners import TLearner, SLearner, XLearner, DomainAdaptationLearner
 
+# Main imports
 # Helper imports
-import numpy as np
-from numpy.random import binomial, multivariate_normal, normal, uniform
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingRegressor
 from sklearn.model_selection import train_test_split
-import matplotlib.pyplot as plt
+
+from uplift.mlops.models.causal_models.tlearner import *
+from uplift.mlops.training_data import PolarsData
+
 
 # Define DGP
 def test_tlearner():
@@ -21,15 +16,14 @@ def test_tlearner():
 
     # set up models
     params = {
-        'n_estimators': 2,
-        'max_depth': 2,
-        'learning_rate': 1,
-        'objective': 'binary:logistic'
+        "n_estimators": 2,
+        "max_depth": 2,
+        "learning_rate": 1,
+        "objective": "binary:logistic",
     }
-    model = MyTLearner('xgb_classifier', params)
+    model = MyTLearner("xgb_classifier", params)
     model.fit(data)
-    uplift_test = model.eval(data_test['features'])
-
+    uplift_test = model.eval(data_test["features"])
 
 
 def generate_data():
@@ -37,35 +31,31 @@ def generate_data():
     n = 10000
     p = 5
     hold_out_ratio = 0.2
-    train_size = n*(1-p)
+    train_size = n * (1 - p)
 
     # random covariates
     cluster = rng.choice([0, 1, 2], size=n, p=[0.4, 0.3, 0.3])
 
-    means = np.array([
-        [0, 0, 0, 0, 0],
-        [2, 2, 2, 2, 2],
-        [-2, -2, -2, -2, -2]
-        ])
+    means = np.array([[0, 0, 0, 0, 0], [2, 2, 2, 2, 2], [-2, -2, -2, -2, -2]])
 
     cov = np.eye(p)
 
     X = np.zeros((n, p))
 
     for k in range(3):
-        idx = (cluster == k)
+        idx = cluster == k
         X[idx] = rng.multivariate_normal(means[k], cov, size=idx.sum())
 
     # random treatment
     T = rng.binomial(1, 0.5, size=n)
 
-    logit_control = (
-        -1.5 + 0.8 * X[:, 0] - 0.5 * X[:, 1] + 0.3 * X[:, 2]
+    logit_control = -1.5 + 0.8 * X[:, 0] - 0.5 * X[:, 1] + 0.3 * X[:, 2]
+
+    p_control = 1 / (1 + np.exp(-logit_control))
+
+    true_uplift = np.select(
+        [cluster == 0, cluster == 1, cluster == 2], [0.15, -0.05, 0.30]
     )
-
-    p_control = 1/(1 + np.exp(-logit_control))
-
-    true_uplift = np.select([cluster == 0, cluster == 1, cluster == 2], [0.15, -0.05, 0.30])
 
     p_treatment = np.clip(p_control + true_uplift, 0.001, 0.999)
 
@@ -73,18 +63,20 @@ def generate_data():
 
     Y = rng.binomial(1, p_observed)
 
-    X_train, X_test, T_train, T_test, Y_train, Y_test = train_test_split(X, T, Y, test_size=hold_out_ratio, random_state=42069)
+    X_train, X_test, T_train, T_test, Y_train, Y_test = train_test_split(
+        X, T, Y, test_size=hold_out_ratio, random_state=42069
+    )
 
-    test_data = {'features': X_test, 'treatment': T_test, 'target': Y_test}
+    test_data = {"features": X_test, "treatment": T_test, "target": Y_test}
     names = []
     metadata = {}
     for i in range(p):
         names.append(f"feature_{i}")
-    metadata['feature_names'] = names.copy()
+    metadata["feature_names"] = names.copy()
     names.append("treatment")
     names.append("conversion")
-    metadata['treatment_name'] = 'treatment'
-    metadata['target_name'] = 'conversion'
+    metadata["treatment_name"] = "treatment"
+    metadata["target_name"] = "conversion"
 
     df = np.append(X_train, T_train.reshape((train_size, 1)), axis=1)
     df = np.append(df, Y_train.reshape((train_size, 1)), axis=1)
@@ -92,6 +84,3 @@ def generate_data():
 
     df = PolarsData(df, metadata)
     return df, test_data
-
-
-

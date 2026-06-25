@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class TrialResults():
+class TrialResults:
     trial_id: str
     config: dict
     split_results: list
@@ -11,9 +11,8 @@ class TrialResults():
 
 
 @dataclass
-class ExperimentResults():
+class ExperimentResults:
     experiment_id: str
     config: dict
     trials: list
     hp_list: list
-    

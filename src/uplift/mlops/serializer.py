@@ -1,7 +1,8 @@
-from abc import ABC, abstractmethod
-from pathlib import Path
 import pickle
+from abc import ABC, abstractmethod
+
 import yaml
+
 
 class Serializer(ABC):
     @abstractmethod
@@ -11,6 +12,7 @@ class Serializer(ABC):
     @abstractmethod
     def save(self):
         pass
+
 
 class PickleSerializer(Serializer):
     def load(self, path):
@@ -22,6 +24,7 @@ class PickleSerializer(Serializer):
         with open(path, "wb") as f:
             pickle.dump(obj, f)
 
+
 class NumpySerializer(Serializer):
     def load(self, path):
         pass
@@ -29,15 +32,17 @@ class NumpySerializer(Serializer):
     def save(self, path, obj):
         pass
 
+
 class YamlSerializer(Serializer):
     def load(self, path):
-        with open(path, "r") as f:
+        with open(path) as f:
             obj = yaml.safe_load(f)
         return obj
 
     def save(self, path, obj):
-        with open(path, 'w+') as f:
+        with open(path, "w+") as f:
             yaml.dump(obj, f)
+
 
 class PlotlySerializer(Serializer):
     def load(self, path):
@@ -54,9 +59,9 @@ class PlotlySerializer(Serializer):
 
     def _save_single_obj(self, path, obj):
         obj.write_html(path)
-                
 
-class SerializerFactory():
+
+class SerializerFactory:
     def create(self, name):
         if name == "pickle":
             return PickleSerializer
@@ -65,5 +70,3 @@ class SerializerFactory():
         if name == "yaml":
             return YamlSerializer
         raise ValueError(f"Unknown Serializer type {name}")
-    
-        

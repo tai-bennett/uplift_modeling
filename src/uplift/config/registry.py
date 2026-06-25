@@ -12,16 +12,18 @@ class ResNet(nn.Module)
 Then we can get the class models by referencing the dictionary MODEL_REGISTRY['resnet50']
 """
 
+
 def register_model(name):
     def decorator(cls):
         MODEL_REGISTRY[name] = cls
         return cls
+
     return decorator
+
 
 def register_sampler(name):
     def decorator(cls):
         SAMPLER_REGISTRY[name] = cls
         return cls
+
     return decorator
-
-

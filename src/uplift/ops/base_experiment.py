@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
+
 from easydict import EasyDict as edict
+
 
 class BaseExperiment(ABC):
     def __init__(self, params):

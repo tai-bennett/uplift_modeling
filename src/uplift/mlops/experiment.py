@@ -1,22 +1,22 @@
-import yaml
-import pdb
 from easydict import EasyDict as edict
-from uplift.mlops.spec import *
-from uplift.mlops.search_space import *
-from uplift.mlops.trial import *
-from uplift.mlops.training_data import *
-from uplift.mlops.pipeline import PipelineFactory
-from uplift.mlops.trial import Trial
-from uplift.mlops.data_source import *
-from uplift.mlops.utils import *
-import uplift.mlops.utils as utils
-from uplift.mlops.results import *
 from pydantic import TypeAdapter
 
-class Experiment():
+from uplift.mlops import utils
+from uplift.mlops.data_source import *
+from uplift.mlops.pipeline import PipelineFactory
+from uplift.mlops.results import *
+from uplift.mlops.search_space import *
+from uplift.mlops.spec import *
+from uplift.mlops.training_data import *
+from uplift.mlops.trial import *
+from uplift.mlops.trial import Trial
+from uplift.mlops.utils import *
+
+
+class Experiment:
     def __init__(self, config):
         self.config = edict(config)
-        self.store = ArtifactStore(get_paths()['experiment_results'])
+        self.store = ArtifactStore(get_paths()["experiment_results"])
         self.store.clear_root()
         # create search space for pipeline hp
         # self.pipeline_hp = self._make_hp_search_space(self.config.pipelines.parameters)
@@ -42,27 +42,22 @@ class Experiment():
                     trial = Trial(self.config.trial_config, trial_config)
                     trial_results.append(trial.run(data, pipeline))
         final_result = ExperimentResults(
-            self.config.experiment.name,
-            self.config,
-            trial_results,
-            hp_list
-            )
+            self.config.experiment.name, self.config, trial_results, hp_list
+        )
         self.store.save_direct(
             self.config.experiment.name,
             final_result,
-            artifact_codec='experiment_results'
+            artifact_codec="experiment_results",
         )
-
 
     def _make_dataset(self, config):
         adapter = TypeAdapter(DataSourceSpec)
         spec = adapter.validate_python(config)
         data_source_class = DataSourceFactory().create(spec)
-        config.pop('type')
+        config.pop("type")
         data_source = data_source_class(**config)
         return data_source.load()
 
-        
     def _make_hp_search_space(self, config):
         # validate the hyperparameter config
         adapter = TypeAdapter(ParameterSpec)
@@ -75,14 +70,17 @@ class Experiment():
             for param_name, param_config in component_config.parameters.items():
                 spec = adapter.validate_python(param_config)
                 subgenerators[param_name] = GeneratorFactory().create(spec)
-            generators[component_name]= GridSearchSpace(subgenerators, name=component_config.name)
+            generators[component_name] = GridSearchSpace(
+                subgenerators, name=component_config.name
+            )
         hp_space = GridSearchSpace(generators)
         return hp_space
-        
+
+
 if __name__ == "__main__":
-    config = utils.load_yml('sample_config.yml')
-#    with open('sample_config.yml', 'r') as f:
-#        config = yaml.safe_load(f)
+    config = utils.load_yml("sample_config.yml")
+    #    with open('sample_config.yml', 'r') as f:
+    #        config = yaml.safe_load(f)
 
     e = Experiment(config)
     e.run()

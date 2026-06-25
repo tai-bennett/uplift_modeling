@@ -1,8 +1,11 @@
-from easydict import EasyDict as edict
-from uplift.config.registry import register_model
-from abc import ABC, abstractmethod
+from abc import ABC
 
-@register_model('base')
+from easydict import EasyDict as edict
+
+from uplift.config.registry import register_model
+
+
+@register_model("base")
 class BaseModel(ABC):
     def __init__(self, params):
         self.params = edict(params)

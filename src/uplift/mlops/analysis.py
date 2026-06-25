@@ -1,14 +1,16 @@
 from abc import ABC, abstractmethod
-import pdb
+
 import plotly.express as px
 
-class AnalysisFactory():
+
+class AnalysisFactory:
     def create(self, name):
         if name == "feature_distribution":
             return FeatureDistribution
         if name == "class_imbalance":
             return ClassImbalance
         raise ValueError(f"Unknown type of analysis named {name}")
+
 
 class Analysis(ABC):
     @abstractmethod
@@ -19,6 +21,7 @@ class Analysis(ABC):
     def create_fig(self, results):
         pass
 
+
 class FeatureDistribution(Analysis):
     def __init__(self, config):
         self.config = config
@@ -26,7 +29,7 @@ class FeatureDistribution(Analysis):
     def run(self, data):
         results = []
         self.data = data
-        for name in data.metadata['feature_names']:
+        for name in data.metadata["feature_names"]:
             feat_fig = self._histogram(name)
             results.append(feat_fig)
         return results
@@ -39,16 +42,17 @@ class FeatureDistribution(Analysis):
         fig = px.histogram(
             self.data.data,
             x=name,
-            color=self.config['color'],
-            marginal='box',
-            barmode='overlay',
+            color=self.config["color"],
+            marginal="box",
+            barmode="overlay",
             nbins=50,
             opacity=0.7,
-            title=f"distribution of {name}"
-            )
+            title=f"distribution of {name}",
+        )
         return fig
 
-class ClassImbalance():
+
+class ClassImbalance:
     def __init__(self, config):
         self.config = config
 
@@ -67,8 +71,8 @@ class ClassImbalance():
         counts = self.data.data[name].value_counts()
         fig = px.bar(
             x=counts[name],
-            y=counts['count'],
-            labels={'x': name, 'y': "Counts"},
-            title=f"Class distribution for {name}"
-            )
+            y=counts["count"],
+            labels={"x": name, "y": "Counts"},
+            title=f"Class distribution for {name}",
+        )
         return fig

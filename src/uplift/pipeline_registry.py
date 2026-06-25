@@ -1,10 +1,15 @@
 """Project pipelines."""
+
 from __future__ import annotations
 
-from kedro.framework.project import find_pipelines
 from kedro.pipeline import Pipeline
-from .pipelines.data_pipeline import create_data_pipeline, create_data_parquet_pipeline
-from .pipelines.data_pipeline import create_data_small_parquet_pipeline
+
+from .pipelines.data_pipeline import (
+    create_data_parquet_pipeline,
+    create_data_pipeline,
+    create_data_small_parquet_pipeline,
+)
+
 # from .pipelines.train_pipeline import create_train_pipeline
 # from .pipelines.train_pipeline import create_train_all_pipeline
 from .pipelines.eda_pipeline import create_eda_pipeline, create_explore_pipeline

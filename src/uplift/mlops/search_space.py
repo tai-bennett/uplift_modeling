@@ -1,21 +1,23 @@
-import pdb
-from itertools import product
-from abc import ABC, abstractmethod
-from uplift.mlops.spec import *
-from uplift.mlops.parameters import *
-from pydantic import ValidationError, TypeAdapter
-from typing import List
-from easydict import EasyDict
 import json
+from abc import ABC, abstractmethod
+from itertools import product
 
-class GeneratorFactory():
+from easydict import EasyDict
+from pydantic import TypeAdapter, ValidationError
+
+from uplift.mlops.parameters import *
+from uplift.mlops.spec import *
+
+
+class GeneratorFactory:
     def create(self, spec: ParameterSpec):
         match spec:
             case ChoiceSpec():
                 return ChoiceGenerator(spec.values)
             case IntRangeSpec():
                 return IntRangeGenerator(spec.min, spec.max, spec.step)
-        
+
+
 class SearchSpace(ABC):
     def __init__(self):
         pass
@@ -24,9 +26,10 @@ class SearchSpace(ABC):
     def __iter__(self):
         pass
 
+
 class GridSearchSpace(SearchSpace):
-    """
-    """
+    """ """
+
     def __init__(self, generators: dict[str, ParameterSpec], name=None):
         self.generators = generators
         self.name = name
@@ -39,18 +42,20 @@ class GridSearchSpace(SearchSpace):
                 yield dict(zip(names, combo))
             else:
                 out = {}
-                out['name'] = self.name
-                out['parameters'] = dict(zip(names, combo))
+                out["name"] = self.name
+                out["parameters"] = dict(zip(names, combo))
                 yield out
 
-class SearchSpaceFactory():
+
+class SearchSpaceFactory:
     def create(self, name):
-        if name == 'grid':
+        if name == "grid":
             return GridSearchSpace
         else:
             raise ValueError(f"Unknown search space type {name}")
 
-class HPBuilder():
+
+class HPBuilder:
     def __init__(self, config):
         if type(config) == EasyDict:
             config = json.loads(json.dumps(config))
@@ -104,20 +109,25 @@ class HPBuilder():
 
     def _convert_spec(self, spec_path):
         value = self._get_value_from_path(spec_path, self.config)
-        self.generators[self._list_to_str(spec_path)] = GeneratorFactory().create(self.adapter.validate_python(value))
+        self.generators[self._list_to_str(spec_path)] = GeneratorFactory().create(
+            self.adapter.validate_python(value)
+        )
 
     def _convert_config_bones(self, spec_path):
         self._set_value_from_path(spec_path, self.config_bones, None)
 
     def _populate_config_bones(self, params_dict):
-        for k, v, in params_dict.items():
+        for (
+            k,
+            v,
+        ) in params_dict.items():
             path = self._str_to_list(k)
             self._set_value_from_path(path, self.config_bones, v)
 
-    def _list_to_str(self, path_list: List[str]) -> str:
+    def _list_to_str(self, path_list: list[str]) -> str:
         return "->".join(path_list)
 
-    def _str_to_list(self, s: str) -> List[str]:
+    def _str_to_list(self, s: str) -> list[str]:
         return s.split("->")
 
     def _get_value_from_path(self, path, d):
@@ -131,26 +141,19 @@ class HPBuilder():
         for key in path[:-1]:
             value = value[key]
         value[path[-1]] = new_value
-            
-        
+
 
 if __name__ == "__main__":
-    data = {
-        "type": "int_range",
-        "min": 3,
-        "max": 21,
-        "step": 2
-        }
+    data = {"type": "int_range", "min": 3, "max": 21, "step": 2}
 
     data2 = {"type": "choice", "values": ["path/here", "path/there"]}
 
     data = IntRangeSpec(**data)
     data2 = ChoiceSpec(**data2)
-             
+
     g = SearchSpaceFactory().create(data)
     g2 = SearchSpaceFactory().create(data2)
 
     hp_space = GridSearchSpace({"depth": g, "path": g2})
     for hp in hp_space:
         print(hp)
- 

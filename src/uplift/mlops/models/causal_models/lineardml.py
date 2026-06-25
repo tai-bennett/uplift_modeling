@@ -1,6 +1,9 @@
-from .base_causal_model import CausalModel
-from econml.dml import LinearDML
 import warnings
+
+from econml.dml import LinearDML
+
+from .base_causal_model import CausalModel
+
 
 class LinearDML(CausalModel):
     def __init__(self):
@@ -16,6 +19,6 @@ class LinearDML(CausalModel):
         if not self.fitted:
             warnings.warn(
                 "This model has not been fit to data, behavior can be unexpected.",
-                UserWarning
-                )
+                UserWarning,
+            )
         return self.model.const_marginal_effect(X)

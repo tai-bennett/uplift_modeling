@@ -1,8 +1,10 @@
-import pdb
-import numpy as np
 from abc import ABC, abstractmethod
-from uplift.mlops.utils import ArtifactStore
+
+import numpy as np
 from sklearn.model_selection import StratifiedKFold as SKStratifiedKFold
+
+from uplift.mlops.utils import ArtifactStore
+
 
 class BaseSplitter(ABC):
     def __init__(self):
@@ -11,6 +13,7 @@ class BaseSplitter(ABC):
     @abstractmethod
     def get_splits(self):
         pass
+
 
 class DetectSplitter(BaseSplitter):
     def __init__(self, indices):
@@ -29,17 +32,14 @@ class DetectSplitter(BaseSplitter):
     def _generate_splits(self):
         pass
 
+
 class StratifiedKFold(BaseSplitter):
     def __init__(self, num_folds):
         super().__init__()
-        self.inputs = {'splitter': 'stratified_k_fold', 'num_folds':num_folds}
+        self.inputs = {"splitter": "stratified_k_fold", "num_folds": num_folds}
         # params gives name of split colum
         self.num_folds = num_folds
-        self.skf = SKStratifiedKFold(
-            n_splits=num_folds,
-            shuffle=True,
-            random_state=42
-        )
+        self.skf = SKStratifiedKFold(n_splits=num_folds, shuffle=True, random_state=42)
 
     def get_splits(self, data):
         store = ArtifactStore()
@@ -48,21 +48,28 @@ class StratifiedKFold(BaseSplitter):
         # if no stored indices, then make them
         if result is None:
             result = self._generate_splits(data)
-            store.save(data.get_hash(), self.inputs, result, artifact_codec="fold_indices")
+            store.save(
+                data.get_hash(), self.inputs, result, artifact_codec="fold_indices"
+            )
         else:
-            print("==================== loading splits: stratified_k_fold ============================")
+            print(
+                "==================== loading splits: stratified_k_fold ============================"
+            )
         return result
 
     def _generate_splits(self, data):
-        print("==================== generating splits: stratified_k_fold ============================")
+        print(
+            "==================== generating splits: stratified_k_fold ============================"
+        )
         indices = {}
-        labels = data.get_column(data.metadata['target_name'])
+        labels = data.get_column(data.metadata["target_name"])
         dummy = np.zeros(len(data), dtype=np.int32)
         for fold_idx, (train_idx, test_idx) in enumerate(self.skf.split(dummy, labels)):
-            indices[fold_idx] = {'train': train_idx, 'test': test_idx}
+            indices[fold_idx] = {"train": train_idx, "test": test_idx}
         return indices
-        
-class SplitterFactory():
+
+
+class SplitterFactory:
     def create(self, name):
         if name == "stratified_k_fold":
             return StratifiedKFold
@@ -70,6 +77,3 @@ class SplitterFactory():
             return DetectSplitter
         else:
             raise ValueError(f"Unknown splitter type {name}")
-
-    
-    

@@ -1,13 +1,10 @@
 # Main imports
-import pdb
-from .base_causal_model import CausalModel
-from .submodel_factory import SubmodelFactory
-from econml.metalearners import TLearner, SLearner, XLearner, DomainAdaptationLearner
+from econml.metalearners import TLearner
 
 # Helper imports
-import numpy as np
-from numpy.random import binomial, multivariate_normal, normal, uniform
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingRegressor
+from .base_causal_model import CausalModel
+from .submodel_factory import SubmodelFactory
+
 
 class MyTLearner(CausalModel):
     def __init__(self, model_name, parameters):
@@ -35,5 +32,3 @@ class MyTLearner(CausalModel):
         but f.eval for certain submodels behave differently, could be predicted classed or class probability?
         """
         return self.model.effect(X)
-
-

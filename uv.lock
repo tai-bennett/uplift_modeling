@@ -3377,6 +3377,7 @@ dependencies = [
     { name = "pyarrow" },
     { name = "pydantic" },
     { name = "pytest" },
+    { name = "ruff" },
     { name = "scikit-uplift" },
     { name = "umap-learn" },
 ]
@@ -3427,6 +3428,7 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.13.4" },
     { name = "pytest", specifier = ">=7.4.4" },
     { name = "pytest", marker = "extra == 'dev'", specifier = "~=7.2" },
+    { name = "ruff", specifier = ">=0.12.12" },
     { name = "ruff", marker = "extra == 'dev'", specifier = "~=0.12.0" },
     { name = "scikit-uplift", specifier = ">=0.5.1" },
     { name = "sphinx", marker = "extra == 'docs'", specifier = ">=5.3,<7.3" },

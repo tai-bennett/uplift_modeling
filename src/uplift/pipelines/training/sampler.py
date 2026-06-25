@@ -1,6 +1,9 @@
 from easydict import EasyDict as edict
+
 from uplift.config.registry import register_sampler
-class BaseSampler():
+
+
+class BaseSampler:
     def __init__(self, data, params):
         self.data = data
         self.params = edict(params)
@@ -9,7 +12,7 @@ class BaseSampler():
         pass
 
 
-@register_sampler('undersampler')
+@register_sampler("undersampler")
 class UnderSampler(BaseSampler):
     def __init(self, data, params):
         super().__init__(data, params)
@@ -21,4 +24,3 @@ class UnderSampler(BaseSampler):
         # combine datasets back
         # return dataset
         pass
-        

@@ -1,7 +1,8 @@
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingRegressor
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestClassifier
 from xgboost import XGBClassifier, XGBRegressor
 
-class SubmodelFactory():
+
+class SubmodelFactory:
     def create(self, name):
         if name == "sk_gradient_boosting_regressor":
             return GradientBoostingRegressor

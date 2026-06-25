@@ -1,9 +1,10 @@
-from pydantic import BaseModel, Field, model_validator
 from typing import Literal
-import pdb
+
+from pydantic import BaseModel, model_validator
+
 
 class IntRangeSpec(BaseModel):
-    type: Literal['int_range']
+    type: Literal["int_range"]
     min: int
     max: int
     step: int = 1
@@ -14,8 +15,9 @@ class IntRangeSpec(BaseModel):
             raise ValueError("must have min < max")
         return self
 
+
 class FloatRangeSpec(BaseModel):
-    type: Literal['float_range']
+    type: Literal["float_range"]
     min: float
     max: float
 
@@ -25,28 +27,28 @@ class FloatRangeSpec(BaseModel):
             raise ValueError("must have min < max")
         return self
 
+
 class CategoricalSpec(BaseModel):
     type: Literal["categorical"]
     values: list
 
+
 class FloatConstantSpec(BaseModel):
-    type: Literal['float_constant']
+    type: Literal["float_constant"]
     value: float
+
 
 class IntConstantSpec(BaseModel):
-    type: Literal['int_constant']
+    type: Literal["int_constant"]
     value: float
 
+
 class StrConstantSpec(BaseModel):
-    type: Literal['str_constant']
+    type: Literal["str_constant"]
     value: str
 
+
 if __name__ == "__main__":
-    data = {
-        "type": "int_range",
-        "min": 3,
-        "max": 21,
-        "step": 2
-        }
+    data = {"type": "int_range", "min": 3, "max": 21, "step": 2}
 
     data = IntRangeSpec(**data)

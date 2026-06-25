@@ -1,9 +1,10 @@
 from .search_space import SearchSpace
 
-class RandomSearch():
+
+class RandomSearch:
     def __init__(self, space: SearchSpace):
         pass
 
     def build(self, n):
-        """ generate n random hyperparameter points"""
+        """generate n random hyperparameter points"""
         pass

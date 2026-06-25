@@ -1,25 +1,24 @@
-from abc import ABC, abstractmethod
-import os
-import shutil
-import pdb
-import yaml
-import polars as pl
-from uplift.config.loaders import get_paths
-from pathlib import Path
-from pydantic import BaseModel
-from uplift.config.loaders import get_paths
-from uplift.mlops.serializer import *
-from uplift.mlops.codec import *
-from typing import Literal
-import json
 import hashlib
+import json
+import os
 import pickle
+import shutil
+from pathlib import Path
+
+import polars as pl
+import yaml
+
+from uplift.config.loaders import get_paths
+from uplift.mlops.codec import *
+from uplift.mlops.serializer import *
+
 
 def load_yml(path):
-    with open(path, "r") as f:
+    with open(path) as f:
         out = yaml.safe_load(f)
     return out
-    
+
+
 def load_data_from_path(root, name, format=None):
     paths = get_paths
     ext = Path(name).suffix
@@ -30,19 +29,21 @@ def load_data_from_path(root, name, format=None):
         df = pl.read_parquet(path)
         return df
     elif ext.casefold() == ".yml".casefold():
-        with open(path, "r") as f:
+        with open(path) as f:
             out = yaml.safe_load(f)
         return out
     else:
         raise ValueError(f"File extension {ext} not supported")
 
+
 # def ArtifactSpec(BaseModel):
 #     id: str
 
-class ArtifactStore():
+
+class ArtifactStore:
     def __init__(self, root=None):
         if root is None:
-            self.root = get_paths()['artifacts']
+            self.root = get_paths()["artifacts"]
         else:
             self.root = root
 
@@ -79,8 +80,6 @@ class ArtifactStore():
                     shutil.rmtree(full_path)
             except Exception as e:
                 print(f"Failed to delete file {full_path} due to {e}")
-            
-            
 
     def get(self, super_hash, params, artifact_codec=None):
         # make combined hash
@@ -103,10 +102,7 @@ class ArtifactStore():
 
     def _combine_hash_dict(self, super_hash, dictionary):
         payload = (
-            super_hash + 
-            json.dumps(dictionary, sort_keys=True, separators=(",", ":"))
-            ).encode("utf-8")
+            super_hash + json.dumps(dictionary, sort_keys=True, separators=(",", ":"))
+        ).encode("utf-8")
         hash_new = hashlib.sha256(payload).hexdigest()
         return hash_new
-
-

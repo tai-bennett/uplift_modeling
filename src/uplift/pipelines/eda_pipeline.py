@@ -1,8 +1,9 @@
 from kedro.pipeline import Pipeline, node
+
 from .eda.eda import main
 from .eda.explore import eda
 
-#def create_data_pipeline() -> Pipeline:
+# def create_data_pipeline() -> Pipeline:
 #    out = Pipeline(
 #        [
 #        node(
@@ -13,31 +14,22 @@ from .eda.explore import eda
 #    ])
 #    return out
 
+
 def create_eda_pipeline() -> Pipeline:
     out = Pipeline(
         [
-        node(
-            func=main,
-            inputs=[
-                "ds_dict",
-                "schema",
-                "params:eda"
-            ],
-            outputs="eda_results"
-        )
-    ])
+            node(
+                func=main,
+                inputs=["ds_dict", "schema", "params:eda"],
+                outputs="eda_results",
+            )
+        ]
+    )
     return out
+
 
 def create_explore_pipeline() -> Pipeline:
     out = Pipeline(
-        [
-        node(
-            func=eda,
-            inputs=[
-                "criteo_train",
-                "params:eda"
-            ],
-            outputs="eda_results"
-        )
-    ])
+        [node(func=eda, inputs=["criteo_train", "params:eda"], outputs="eda_results")]
+    )
     return out

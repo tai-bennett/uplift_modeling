@@ -1,10 +1,13 @@
 from abc import ABC, abstractmethod
+
 from uplift.mlops.spec import *
+
 
 class ParameterGenerator(ABC):
     @abstractmethod
     def __iter__(self):
         pass
+
 
 class ChoiceGenerator(ParameterGenerator):
     def __init__(self, values):
@@ -12,6 +15,7 @@ class ChoiceGenerator(ParameterGenerator):
 
     def __iter__(self):
         yield from self.values
+
 
 class IntRangeGenerator(ParameterGenerator):
     def __init__(self, min, max, step):
@@ -25,4 +29,3 @@ class IntRangeGenerator(ParameterGenerator):
         while current <= self.max:
             yield current
             current += self.step
-

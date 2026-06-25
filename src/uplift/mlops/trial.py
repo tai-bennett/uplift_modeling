@@ -1,11 +1,13 @@
-from uplift.mlops.models import ModelFactory
-from uplift.mlops.search_space import *
-from uplift.mlops.metric import *
-from uplift.mlops.results import TrialResults
-from uplift.mlops.evaluator import *
 import polars as pl
 
-class Trial():
+from uplift.mlops.evaluator import *
+from uplift.mlops.metric import *
+from uplift.mlops.models import ModelFactory
+from uplift.mlops.results import TrialResults
+from uplift.mlops.search_space import *
+
+
+class Trial:
     def __init__(self, general_config, trial_config):
         self.general_config = general_config
         self.config = trial_config
@@ -25,29 +27,33 @@ class Trial():
             n += 1
             # make new model
             metrics = []
-            print("running trial for model " + str(self.config.model) + " with " + str(hp))
+            print(
+                "running trial for model " + str(self.config.model) + " with " + str(hp)
+            )
             for split_num, train_data, valid_data in pipeline.build_splits(data):
-                split_result = {'split': split_num}
+                split_result = {"split": split_num}
                 print(" ==== split num:" + str(split_num) + " ====")
                 # instantiate and train model
-                model = self.model_class(**hp['parameters'])
+                model = self.model_class(**hp["parameters"])
                 model.fit(train_data)
                 # build evaluation data
                 eval_data = self.evaluator(model, valid_data)
                 # compute metrics and append to results
                 metrics.append(split_result | self.metric_report.eval(eval_data))
             metric_per_split = pl.DataFrame(metrics)
-            metric_df = pl.DataFrame(metrics).drop('split').describe().filter(pl.col('statistic').is_in(['mean', 'std', 'min', 'max'])).with_columns(pl.lit(n).alias('idx'))
+            metric_df = (
+                pl.DataFrame(metrics)
+                .drop("split")
+                .describe()
+                .filter(pl.col("statistic").is_in(["mean", "std", "min", "max"]))
+                .with_columns(pl.lit(n).alias("idx"))
+            )
             results_per_split_list.append(metric_per_split)
             results_aggregate_list.append(metric_df)
             hp_list.append(hp)
-        result = pl.concat(results_aggregate_list).sort(['idx', 'statistic'])
+        result = pl.concat(results_aggregate_list).sort(["idx", "statistic"])
         result_splits = pl.concat(results_per_split_list)
         out = TrialResults(
-            self.config.name,
-            self.config,
-            result_splits,
-            result,
-            hp_list
-            )
+            self.config.name, self.config, result_splits, result, hp_list
+        )
         return out
