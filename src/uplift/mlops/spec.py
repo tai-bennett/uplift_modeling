@@ -4,6 +4,7 @@ from typing import Annotated, Any, Literal
 from pydantic import BaseModel, Field, model_validator
 
 
+# ============================ Custom Specs ======================================
 class ChoiceSpec(BaseModel):
     type: Literal["choice"]
     values: list[Any]
@@ -42,16 +43,34 @@ ParameterSpec = Annotated[
 class SearchSpaceConfig(BaseModel):
     hyperparameters: dict[str, ParameterSpec]
 
+# ============================ Optuna Specs ======================================
 
-if __name__ == "__main__":
-    data = {"type": "int_range", "min": 3, "max": 21, "step": 2}
+class OptunaIntegerSpec(BaseModel):
+    type: Literal['int']
+    name: str
+    low: int
+    high: int
+    step: int = 1
+    log: bool = False
 
-    data = IntRangeSpec(**data)
+class OptunaCategoricalSpec(BaseModel):
+    type: Literal['categorical']
+    name: str
+    choices: list[Any]
+    @model_validator(mode="after")
+    def validate_choices(self):
+        choice_type = type(self.choices[0])
+        for choice in self.choices:
+            if type(choice) != choice_type:
+                raise ValueError(f"Choices must has all the same type. Found type {choice_type} and {type(choice)} in choices.")
+        return self
 
-    hp = {
-        "param1": {"type": "int_range", "min": 1, "max": 9, "step": 2},
-        "param2": {"type": "choice", "values": ["a", "b", "c"]},
-    }
+class OptunaUniformSpec(BaseModel):
+    type: Literal['uniform']
+    name: str
+    low: int
+    high: int
 
-    config = SearchSpaceConfig.model_validate({"hyperparameters": hp})
-    pdb.set_trace()
+OptunaParameterSpec = Annotated[
+    OptunaIntegerSpec | OptunaCategoricalSpec | OptunaUniformSpec, Field(discriminator="type")
+]

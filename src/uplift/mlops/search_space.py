@@ -65,7 +65,7 @@ class HPBuilder:
         self.path = []
         self.spec_paths = []
         self.generators = {}
-        self.adapter = TypeAdapter(ParameterSpec)
+        self.adapter = TypeAdapter(OptunaParameterSpec)
         self.build()
 
     def __iter__(self):
@@ -77,7 +77,6 @@ class HPBuilder:
 
     def build(self):
         self._search(self.config)
-        self._convert_specs()
         self.built = True
 
     def _search(self, tree):

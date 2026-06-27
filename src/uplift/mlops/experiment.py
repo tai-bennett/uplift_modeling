@@ -1,3 +1,4 @@
+import optuna
 from easydict import EasyDict as edict
 from pydantic import TypeAdapter
 
@@ -79,6 +80,21 @@ class Experiment:
 class OptunaExperiment:
     def __init__(self, config):
         self.config = edict(config)
+        self.current_study_config = None
 
     def run(self):
-        pass
+        for study_config in self.config.studies:
+            self.current_study_config = study_config
+            self.run_study()
+
+    def run_study(self, config):
+        study = optuna.create_study()
+        study.optimize(self.objective, n_trials=20)
+
+    def objective(self, trial):
+        # generate pipeline parameters via optuna
+
+        # generate model config via optuna
+        return 0
+
+        

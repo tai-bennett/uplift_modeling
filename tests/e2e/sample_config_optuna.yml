@@ -1,0 +1,73 @@
+experiment:
+  name: test_optuna_experiment
+
+data:
+  type: parquet
+  format: polars
+  path: criteo_train_small.parquet
+  root: data_primary
+  metapath: criteo_metadata.yml
+  metaroot: meta
+
+data_test:
+  type: parquet
+  format: polars
+  path: criteo_test_small.parquet
+  root: data_primary
+  metapath: criteo_metadata.yml
+  metaroot: meta
+
+pipelines:
+  - name: pipeline type 1
+    type: proto
+    components:
+      splitter:
+        name: stratified_k_fold
+        parameters:
+          num_folds:
+            type: categorical
+            choices:
+              - 5
+      sampler:
+        name: undersampler
+        parameters:
+          ratio:
+            type: categorical
+            values:
+              - 0.5
+              - 1
+          seed:
+            type: categorical
+            values:
+              - 42069
+
+trial_config:
+  metrics:
+    - qini
+    - auuc
+
+studies:
+  - name: test_tlearner
+    model: tlearner
+    parameters:
+      model_name: xgb_classifier
+      parameters:
+        n_estimators:
+          type: int
+          name: n_estimators
+          low: 90
+          high: 120
+          step: 10
+        max_depth:
+          type: int
+          low: 5
+          high: 8
+        learning_rate:
+          type: categorical
+          choices:
+            - 1
+        objective:
+          type: categorical
+          choices:
+            - binary:logistic
+    
