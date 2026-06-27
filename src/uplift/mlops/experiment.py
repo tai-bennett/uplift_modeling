@@ -76,11 +76,9 @@ class Experiment:
         hp_space = GridSearchSpace(generators)
         return hp_space
 
+class OptunaExperiment:
+    def __init__(self, config):
+        self.config = edict(config)
 
-if __name__ == "__main__":
-    config = utils.load_yml("sample_config.yml")
-    #    with open('sample_config.yml', 'r') as f:
-    #        config = yaml.safe_load(f)
-
-    e = Experiment(config)
-    e.run()
+    def run(self):
+        pass
