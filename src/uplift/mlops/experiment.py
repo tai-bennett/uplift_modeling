@@ -12,6 +12,7 @@ from uplift.mlops.training_data import *
 from uplift.mlops.trial import *
 from uplift.mlops.trial import Trial
 from uplift.mlops.utils import *
+from uplift.mlops.optuna_utils import *
 
 
 class Experiment:
@@ -87,14 +88,19 @@ class OptunaExperiment:
             self.current_study_config = study_config
             self.run_study()
 
-    def run_study(self, config):
+    def run_study(self):
         study = optuna.create_study()
         study.optimize(self.objective, n_trials=20)
 
     def objective(self, trial):
         # generate pipeline parameters via optuna
-
+        hp_pipeline = OptunaHPBuilder(self.config.pipeline)
+        pipeline_param = hp_pipeline.get_parameters(trial)
         # generate model config via optuna
+        hp_study = OptunaHPBuilder(self.current_study_config)
+        study_param = hp_study.get_parameters(trial)
+        # make trial and train
+
         return 0
 
         
