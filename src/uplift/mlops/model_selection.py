@@ -1,11 +1,11 @@
-class ExperimentAnalysis():
+class ExperimentAnalysis:
     def __init__(self):
         pass
 
     def run(self, experiment_results):
         pass
 
-class ModelSelector():
+class ModelSelector:
     def __init__(self):
         pass
 

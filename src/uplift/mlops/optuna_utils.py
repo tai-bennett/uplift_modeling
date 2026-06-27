@@ -1,14 +1,13 @@
 import json
 
-from abc import ABC, abstractmethod
-from easydict import EasyDict
 from easydict import EasyDict
 from pydantic import TypeAdapter, ValidationError
 
 from uplift.mlops.parameters import *
 from uplift.mlops.spec import *
 
-class OptunaHPBuilder():
+
+class OptunaHPBuilder:
     def __init__(self, config):
         if type(config) == EasyDict:
             config = json.loads(json.dumps(config))
@@ -121,5 +120,5 @@ def optuna_to_config(config, params):
         return {k: optuna_to_config(v, params) for k, v in config.items()}
     return config
 
-    
-        
+
+

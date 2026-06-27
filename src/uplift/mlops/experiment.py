@@ -2,17 +2,16 @@ import optuna
 from easydict import EasyDict as edict
 from pydantic import TypeAdapter
 
-from uplift.mlops import utils
 from uplift.mlops.data_source import *
+from uplift.mlops.optuna_utils import OptunaHPBuilder, optuna_to_config
 from uplift.mlops.pipeline import PipelineFactory
 from uplift.mlops.results import *
 from uplift.mlops.search_space import *
 from uplift.mlops.spec import *
 from uplift.mlops.training_data import *
 from uplift.mlops.trial import *
-from uplift.mlops.trial import Trial, SingleTrial
+from uplift.mlops.trial import SingleTrial, Trial
 from uplift.mlops.utils import ArtifactStore
-from uplift.mlops.optuna_utils import OptunaHPBuilder, optuna_to_config
 
 
 class Experiment:
@@ -128,4 +127,4 @@ class OptunaExperiment:
         config_copy.pop("type")
         data_source = data_source_class(**config_copy)
         return data_source.load()
-        
+

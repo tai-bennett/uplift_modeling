@@ -3,7 +3,6 @@ import json
 import os
 import pickle
 import shutil
-from easydict import EasyDict
 from pathlib import Path
 
 import polars as pl
