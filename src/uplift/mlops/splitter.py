@@ -50,17 +50,10 @@ class StratifiedKFold(BaseSplitter):
             result = self._generate_splits(data)
             store.save(
                 data.get_hash(), self.inputs, result, artifact_codec="fold_indices"
-            )
-        else:
-            print(
-                "==================== loading splits: stratified_k_fold ============================"
-            )
+                )
         return result
 
     def _generate_splits(self, data):
-        print(
-            "==================== generating splits: stratified_k_fold ============================"
-        )
         indices = {}
         labels = data.get_column(data.metadata["target_name"])
         dummy = np.zeros(len(data), dtype=np.int32)

@@ -57,3 +57,33 @@ class Trial:
             self.config.name, self.config, result_splits, result, hp_list
         )
         return out
+
+class SingleTrial:
+    def __init__(self, study_config, general_config):
+        # set configs
+        self.study_config = study_config
+        self.general_config = general_config
+
+        # call factories
+        self.model_class = ModelFactory().create(self.study_config['model'])
+        # self.pipeline_class = PipelineFactory().create(pipeline_config['type'])
+
+        # metric reporter
+        self.metric_report = MetricReport(self.general_config['metrics'])
+        self.evaluator = Evaluator(self.metric_report.required_inputs)
+
+    def run(self, data, pipeline):
+        out = []
+        for split_num, train_data, valid_data in pipeline.build_splits(data):
+            # instantiate and train model
+            model = self.model_class(**self.study_config["parameters"])
+            model.fit(train_data)
+            # build evaluation data
+            eval_data = self.evaluator(model, valid_data)
+            results = self.metric_report.eval(eval_data)
+            results['split'] = split_num
+            out.append(results)
+        out = pl.from_dicts(out)
+        metric_name = self.general_config['metrics'][0]
+        return out.mean()[metric_name].item(0)
+

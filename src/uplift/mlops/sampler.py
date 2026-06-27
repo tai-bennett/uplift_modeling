@@ -39,16 +39,9 @@ class Undersampler(BaseSampler):
             store.save(
                 data.get_hash(), self.inputs, result, artifact_codec="fold_indices"
             )
-        else:
-            print(
-                "==================== loading splits: undersampling ============================"
-            )
         return indices
 
     def _generate_splits(self, indices, data):
-        print(
-            "==================== generating splits: undersampling ============================"
-        )
         if type(data) != PolarsData:
             raise NotImplementedError(
                 f"Undersampler not implemented for data type {type(data)}"

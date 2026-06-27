@@ -46,6 +46,7 @@ class OptunaHPBuilder():
         method_name = d.pop('type')
         method_name = "suggest_" + method_name
         method = getattr(trial, method_name)
+        # d['name'] = ".".join(self.path)
         param = method(**d)
         self._set_value_from_path(self.path, self.config_bones, param)
 
@@ -96,4 +97,29 @@ class OptunaHPBuilder():
             value = value[key]
         value[path[-1]] = new_value
 
+def is_parameter_spec(d):
+    adapter = TypeAdapter(OptunaParameterSpec)
+    try:
+        adapter.validate_python(d)
+        return True
+    except ValidationError:
+        return False
+
+def optuna_to_config(config, params):
+    """
+    config: is the original config that has a OptunaParameterSpec at nodes
+        that Optuna handled
+    params: is a flat dictionary produced by Optuna where
+        params[param_name] = value
+    description: this method translates the optuma params into the original
+    structure so that it may be passed to a model/pipeline factory
+
+    """
+    if is_parameter_spec(config):
+        return params[config['name']]
+    if type(config) == dict:
+        return {k: optuna_to_config(v, params) for k, v in config.items()}
+    return config
+
+    
         

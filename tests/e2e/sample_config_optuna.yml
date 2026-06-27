@@ -25,6 +25,7 @@ pipeline:
       name: stratified_k_fold
       parameters:
         num_folds:
+          name: cv_num_folds
           type: categorical
           choices:
             - 5
@@ -32,13 +33,15 @@ pipeline:
       name: undersampler
       parameters:
         ratio:
+          name: undersample_ratio
           type: categorical
-          values:
+          choices:
             - 0.5
-            - 1
+            - 1.0
         seed:
+          name: seed
           type: categorical
-          values:
+          choices:
             - 42069
 
 trial_config:
@@ -73,4 +76,30 @@ studies:
           type: categorical
           choices:
             - binary:logistic
-    
+  - name: test_part2
+    model: tlearner
+    parameters:
+      model_name: xgb_classifier
+      parameters:
+        n_estimators:
+          type: int
+          name: n_estimators
+          low: 10
+          high: 40
+          step: 10
+        max_depth:
+          name: max_depth
+          type: int
+          low: 2
+          high: 5
+        learning_rate:
+          name: learning_rate
+          type: categorical
+          choices:
+            - 1.0
+            - 0.5
+        objective:
+          name: objective
+          type: categorical
+          choices:
+            - binary:logistic
