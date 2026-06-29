@@ -85,5 +85,7 @@ class SingleTrial:
             out.append(results)
         out = pl.from_dicts(out)
         metric_name = self.general_config['metrics'][0]
-        return out.mean()[metric_name].item(0)
+        value = out.mean()[metric_name].item(0)
+        # mlflow.log_metric(metric_name, value)
+        return value
 

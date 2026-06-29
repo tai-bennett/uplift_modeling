@@ -32,6 +32,7 @@ dependencies = [
     "econml>=0.16.0",
     "scikit-uplift>=0.5.1",
     "optuna>=4.9.0",
+    "mlflow>=3.14.0",
 ]
 
 [project.scripts]

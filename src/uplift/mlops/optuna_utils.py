@@ -116,6 +116,9 @@ def optuna_to_config(config, params):
     """
     if is_parameter_spec(config):
         return params[config['name']]
+    if type(config) == EasyDict:
+        config = json.loads(json.dumps(config))
+        return {k: optuna_to_config(v, params) for k, v in config.items()}
     if type(config) == dict:
         return {k: optuna_to_config(v, params) for k, v in config.items()}
     return config

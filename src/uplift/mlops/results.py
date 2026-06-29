@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from optuna import Trial
+
 
 @dataclass
 class TrialResults:
@@ -16,3 +18,9 @@ class ExperimentResults:
     config: dict
     trials: list
     hp_list: list
+
+@dataclass
+class TuningResults:
+    best_trial: Trial
+    best_config: dict
+    metric: float

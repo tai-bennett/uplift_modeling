@@ -1,5 +1,5 @@
 experiment:
-  name: test_optuna_experiment
+  name: test_optuna_mlflow_experiment
 
 data:
   type: parquet
