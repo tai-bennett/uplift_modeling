@@ -105,7 +105,8 @@ class OptunaExperiment:
             mlflow.log_param("winner_config", winner.config)
 
             # train the best config on the whole dataset
-            self.train_winner(winner)
+            model_info = self.train_winner(winner)
+        return model_info
 
     def train_winner(self, winner):
         with mlflow.start_run(run_name="final_training_run", nested=True):
@@ -128,7 +129,7 @@ class OptunaExperiment:
                 input_example=input_ex,
                 registered_model_name=f"self.model_{self.experiment_name}_winner"
             )
-            pdb.set_trace()
+            return model_info
 
 
     def run_study(self):

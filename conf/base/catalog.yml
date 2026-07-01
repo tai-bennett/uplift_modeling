@@ -7,6 +7,15 @@ criteo_uplift:
   type: kedro_datasets.huggingface.HFDataset
   dataset_name: criteo/criteo-uplift
 
+criteo_metadata:
+  type: yaml.YAMLDataset
+  filepath: data/00_meta/criteo/criteo-uplift.yml
+
+criteo_snapshot:
+  type: polars.LazyPolarsDataset
+  file_format: parquet
+  filepath: data/01_raw/criteo_snapshot.parquet
+
 criteo_train:
   type: polars.LazyPolarsDataset
   file_format: parquet
@@ -31,9 +40,6 @@ criteo_schema:
   type: yaml.YAMLDataset
   filepath: data/08_reporting/criteo_schema.yml
 
-criteo_metadata:
-  type: yaml.YAMLDataset
-  filepath: data/00_meta/criteo_metadata.yml
 
 metadata:
   type: yaml.YAMLDataset
