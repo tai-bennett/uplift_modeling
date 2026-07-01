@@ -18,3 +18,6 @@ class CausalModel(ABC):
     @abstractmethod
     def eval(self):
         pass
+
+    def __call__(self, X):
+        return X

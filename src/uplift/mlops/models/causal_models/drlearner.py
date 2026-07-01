@@ -34,6 +34,10 @@ class MyDRLearner(CausalModel):
         X, y, T = self._process_train_data(data)
         self.model.fit(y, T, X=X)
 
+    def __call__(self, X):
+        return self.effect(X)
+
+
     def effect(self, X):
         """
         returns the uplift

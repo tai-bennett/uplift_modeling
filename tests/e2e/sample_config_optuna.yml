@@ -24,7 +24,7 @@ pipeline:
     splitter:
       name: stratified_k_fold
       parameters:
-        num_folds:
+        num_splits:
           name: cv_num_folds
           type: categorical
           choices:

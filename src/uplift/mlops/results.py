@@ -21,6 +21,6 @@ class ExperimentResults:
 
 @dataclass
 class TuningResults:
-    best_trial: Trial
-    best_config: dict
+    trial: Trial
+    config: dict
     metric: float

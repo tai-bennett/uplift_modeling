@@ -29,7 +29,7 @@ class Undersampler(BaseSampler):
     def sample(self):
         pass
 
-    def get_splits(self, indices, data):
+    def get_indices(self, indices, data):
         store = ArtifactStore()
         # look for stored indices
         result = store.get(data.get_hash(), self.inputs, artifact_codec="fold_indices")
@@ -37,11 +37,15 @@ class Undersampler(BaseSampler):
         if result is None:
             result = self._generate_splits(indices, data)
             store.save(
-                data.get_hash(), self.inputs, result, artifact_codec="fold_indices"
+                data.get_hash(), self.inputs, result['train'], artifact_codec="fold_indices"
             )
+            return result
+        indices['train'] = result
         return indices
 
     def _generate_splits(self, indices, data):
+        input_indices = indices.copy()
+        indices = indices['train']
         if type(data) != PolarsData:
             raise NotImplementedError(
                 f"Undersampler not implemented for data type {type(data)}"
@@ -61,7 +65,8 @@ class Undersampler(BaseSampler):
             )
             indices[fold_idx]["train"] = subindices.flatten()
         data.data = data.data.drop("row_idx")
-        return indices
+        input_indices['train'] = indices
+        return input_indices
 
     def _compute_sampling_prob(self, value_counts, target_col):
         majority = {target_col: None, "count": -100}

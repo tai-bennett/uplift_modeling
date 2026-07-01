@@ -1,4 +1,5 @@
-
+import pdb
+import pandas as pd
 import mlflow
 import optuna
 from easydict import EasyDict as edict
@@ -92,32 +93,55 @@ class OptunaExperiment:
         self.check_mlflow_connection()
 
     def run(self):
+        # run tuning selecting winners from each study
         winners = []
         with mlflow.start_run(run_name=f"studies_{self.experiment_name}"):
             for study_config in self.config.studies:
-                self.current_study_config = study_config
+                self.current_config = {'study': study_config, 'pipeline': self.config.pipeline}
                 study_winner = self.run_study()
                 winners.append(study_winner)
-            # get winner from study winner
+            # get winner from study winners
             winner = max(winners, key=lambda result: result.metric)
-            mlflow.log_params(winner.best_config)
+            mlflow.log_param("winner_config", winner.config)
+
+            # train the best config on the whole dataset
+            self.train_winner(winner)
+
+    def train_winner(self, winner):
+        with mlflow.start_run(run_name="final_training_run", nested=True):
+            hp = winner.config
+            # make pipeline
+            pipeline_class = PipelineFactory().create(hp['pipeline']['type'])
+            pipeline = pipeline_class(hp['pipeline']['components'])
+            pipeline.build(self.data, mode='train')
+            # make single trial
+            st = SingleTrial(hp['study'], self.config.trial_config)
+            eval_metric = st.run(self.data, pipeline)
+            # log metrics and parameters
+            input_ex = pd.DataFrame(
+                self.data[0:10].get_features(as_type='numpy'),
+                columns=self.data.metadata['feature_names']
+            )
+            model_info = mlflow.pyfunc.log_model(
+                name=f"model_{self.experiment_name}_winner",
+                python_model=st.model,
+                input_example=input_ex,
+                registered_model_name=f"self.model_{self.experiment_name}_winner"
+            )
+            pdb.set_trace()
 
 
     def run_study(self):
         study = optuna.create_study(
-            study_name=self.current_study_config['name'],
+            study_name=self.current_config['study']['name'],
             direction='maximize'
         )
         study.optimize(self.mlflow_objective, n_trials=3)
         best_params = study.best_trial.params
 
-        best_model_config = optuna_to_config(self.current_study_config.copy(), best_params)
-        best_pipeline_config = optuna_to_config(self.config.pipeline.copy(), best_params)
-        # translate back to original config structure
-        best_config = {
-            'pipeline': best_pipeline_config,
-            'study': best_model_config
-            }
+        # best_model_config = optuna_to_config(self.current_study_config.copy(), best_params)
+        # best_pipeline_config = optuna_to_config(self.config.pipeline.copy(), best_params)
+        best_config = optuna_to_config(self.current_config.copy(), best_params)
         out = TuningResults(
             study.best_trial,
             best_config,
@@ -129,24 +153,27 @@ class OptunaExperiment:
     def mlflow_objective(self, trial):
         with mlflow.start_run(nested=True, run_name=f"optuna_trial_{trial.number}"):
             score = self.objective(trial)
-            mlflow.log_metric('metric', score)
+            mlflow.log_metric(f"score_{self.config.trial_config.metrics[0]}", score)
             return score
 
 
     def objective(self, trial):
         # generate pipeline parameters via optuna
-        hp_pipeline = OptunaHPBuilder(self.config.pipeline)
-        pipeline_params = hp_pipeline.get_parameters(trial)
-        pipeline_class = PipelineFactory().create(pipeline_params['type'])
-        pipeline = pipeline_class(pipeline_params['components'])
+        hp_builder = OptunaHPBuilder(self.current_config)
+        hp = hp_builder.get_parameters(trial)
+        # hp_pipeline = OptunaHPBuilder(self.config.pipeline)
+        # pipeline_params = hp_pipeline.get_parameters(trial)
+        pipeline_class = PipelineFactory().create(hp['pipeline']['type'])
+        pipeline = pipeline_class(hp['pipeline']['components'])
         pipeline.build(self.data)
         # generate model config via optuna
-        hp_study = OptunaHPBuilder(self.current_study_config)
-        study_params = hp_study.get_parameters(trial)
+        # hp_study = OptunaHPBuilder(self.current_study_config)
+        # study_params = hp_study.get_parameters(trial)
         # mlflow log params
-        mlflow.log_params({"pipeline": pipeline_params, "study": study_params})
+        # mlflow.log_params({"pipeline": pipeline_params, "study": study_params})
+        mlflow.log_param(f"trial_{trial.number}_hp", hp)
         # make trial and train
-        st = SingleTrial(study_params, self.config.trial_config)
+        st = SingleTrial(hp['study'], self.config.trial_config)
         eval_metric = st.run(self.data, pipeline)
         return eval_metric
 

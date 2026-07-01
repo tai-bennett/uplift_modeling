@@ -75,6 +75,10 @@ class PolarsData(Data):
         if as_type == "numpy":
             return out.to_numpy()
 
+    def to_numpy(self):
+        out = self.data.data
+        return self._convert_output(out, as_type='numpy')
+
 
 class DataFactory:
     def create(self, data, meta):

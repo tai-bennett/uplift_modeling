@@ -1,4 +1,5 @@
 import json
+import copy
 
 from easydict import EasyDict
 from pydantic import TypeAdapter, ValidationError
@@ -13,7 +14,7 @@ class OptunaHPBuilder:
             config = json.loads(json.dumps(config))
         self.built = False
         self.config = config
-        self.config_bones = config.copy()
+        self.config_bones = copy.deepcopy(config)
         self.path = []
         self.spec_paths = []
         # self.generators = {}
@@ -30,6 +31,8 @@ class OptunaHPBuilder:
         for k, v in tree.items():
             self.path.append(k)
             # if v is a spec
+            if type(v) == EasyDict:
+                v = json.loads(json.dumps(v))
             if self._is_parameter_spec(v):
                 self._handle_spec(v, trial)
             # if v is a tree
@@ -39,7 +42,6 @@ class OptunaHPBuilder:
             self.path.pop()
 
     def _handle_spec(self, v, trial):
-        # self.spec_paths.append(self.path.copy())
         spec = self.adapter.validate_python(v)
         d = spec.model_dump()
         method_name = d.pop('type')

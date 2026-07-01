@@ -1,4 +1,6 @@
 # Main imports
+import numpy as np
+import pandas as pd
 from econml.metalearners import TLearner
 
 # Helper imports
@@ -12,6 +14,13 @@ class MyTLearner(CausalModel):
         # models = GradientBoostingRegressor(**parameters)
         models = SubmodelFactory().create(model_name)(**parameters)
         self.model = TLearner(models=models)
+
+    def __call__(self, model_input: pd.DataFrame) -> np.ndarray:
+        X = model_input.to_numpy()
+        return self.effect(X)
+
+    def predict(self, model_input: pd.DataFrame) -> np.ndarray:
+        return self.__call__(model_input)
 
     def fit(self, data):
         X, y, T = self._process_train_data(data)
