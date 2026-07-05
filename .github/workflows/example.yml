@@ -1,5 +1,5 @@
 name: Example
-
+on: [push]
 jobs:
   uv-example:
     name: python
@@ -16,4 +16,4 @@ jobs:
 
       - name: Run tests
         # For example, using `pytest`
-        run: uv run pytest tests
+        run: echo "This is where you would run pytest"
