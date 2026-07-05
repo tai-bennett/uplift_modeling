@@ -6,7 +6,7 @@ def create_ingestion_pipeline() -> Pipeline:
         [
             node(
                 func=get_dataset,
-                inputs="params:ingestion.dataset_name",
+                inputs="params:ingestion",
                 outputs="ds",
                 name="ingestion"
             ),

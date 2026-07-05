@@ -1,0 +1,17 @@
+meta:
+  name: experiment_test
+  author: db
+
+data:
+  parameters:
+    indices:
+      type: choice
+      values:
+        - path/to/one
+	- path/to/two
+	- path/to/three
+    other:
+      type: choice
+      values:
+        - 5
+        - 10

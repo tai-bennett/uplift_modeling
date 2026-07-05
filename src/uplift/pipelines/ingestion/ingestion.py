@@ -7,8 +7,16 @@ from sklearn.model_selection import StratifiedKFold
 
 from uplift.config.loaders import get_paths
 
-def get_dataset(data_name):
-    ds = load_dataset(data_name)
+def get_dataset(params):
+    try:
+        test_status = params['test']
+    except KeyError:
+        test_status = False
+    data_name = params['dataset_name']
+    if test_status:
+        ds = load_dataset(data_name, split='train[:1000]')
+    else:
+        ds = load_dataset(data_name)
     return ds
 
 def save_snapshot(ds, name):
