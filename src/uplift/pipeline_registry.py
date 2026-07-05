@@ -44,6 +44,7 @@ def register_pipelines() -> dict[str, Pipeline]:
     pipelines["__default__"] = ingestion + preprocessing + training + postprocessing
     pipelines["ingestion"] = ingestion
     pipelines["preprocessing"] = preprocessing
+    pipelines["postprocessing"] = postprocessing
     pipelines["training"] = training
     pipelines["parquet_small"] = data_parquet_small
     pipelines["eda"] = data + eda

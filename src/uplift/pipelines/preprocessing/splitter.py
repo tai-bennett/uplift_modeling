@@ -48,6 +48,17 @@ class StratifiedSplitter(BaseSplitter):
         remain = remain_X.with_columns(remain_y.alias(self.meta['target_name']))
         return split, remain
 
+class UpliftStratifieldSplitter(BaseSplitter):
+    def __init__(self, ds, meta):
+        self.ds = ds
+        self.meta = meta
+
+    def run(self, ds, split_dict):
+        pass
+
+    def _make_splits(self):
+        pass
+
 class SplitterFactory:
     def create(self, name):
         if name == 'stratified':

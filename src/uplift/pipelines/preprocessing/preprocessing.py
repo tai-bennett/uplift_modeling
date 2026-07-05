@@ -1,6 +1,7 @@
 import pdb
 import polars as pl
 from .splitter import SplitterFactory
+from .simulator import Simulator
 from uplift.config.loaders import get_paths
 from uplift.utils import load_yml
 
@@ -13,6 +14,10 @@ def fetch_snapshot(dataset_name):
     meta = load_yml(path)
     return ds, meta
 
+def simulate_monetary(ds, meta, params):
+    sim = Simulator(**params)
+    ds, meta = sim.run(ds, meta)
+    return ds, meta
 
 def split(dataset_name, ds, meta, params):
     splitter = SplitterFactory().create(params['type'])(ds, meta)

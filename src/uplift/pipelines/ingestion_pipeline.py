@@ -8,11 +8,13 @@ def create_ingestion_pipeline() -> Pipeline:
                 func=get_dataset,
                 inputs="params:ingestion.dataset_name",
                 outputs="ds",
+                name="ingestion"
             ),
             node(
                 func=save_snapshot,
                 inputs=["ds", "params:ingestion.dataset_name"],
                 outputs="path",
+                name="ingestion_save_snapshot"
             ),
             # node(
             #    func=preprocessing,

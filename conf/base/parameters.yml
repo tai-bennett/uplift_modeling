@@ -2,6 +2,9 @@ ingestion:
   dataset_name: 'criteo/criteo-uplift'
 
 preprocess:
+  simulate:
+    revenue_mu: 5
+    revenue_sigma: 0.8
   split:
     type: stratified
     split_dict:

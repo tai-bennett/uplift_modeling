@@ -14,10 +14,10 @@ class TrialResults:
 
 @dataclass
 class ExperimentResults:
-    experiment_id: str
+    run_id: str
+    model_uri: str
+    metrics: float
     config: dict
-    trials: list
-    hp_list: list
 
 @dataclass
 class TuningResults:

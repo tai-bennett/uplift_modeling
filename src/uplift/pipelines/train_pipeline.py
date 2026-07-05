@@ -7,7 +7,7 @@ def create_train_pipeline() -> Pipeline:
             node(
                 func=train_from_config,
                 inputs=["status", "params:train.config"],
-                outputs="model_info",
+                outputs="training_results",
             ),
         ]
     )
