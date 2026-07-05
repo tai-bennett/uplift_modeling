@@ -1,0 +1,75 @@
+ingestion:
+  dataset_name: 'criteo/criteo-uplift'
+  test: True
+
+preprocess:
+  simulate:
+    revenue_mu: 5
+    revenue_sigma: 0.8
+  split:
+    type: stratified
+    split_dict:
+      train: 0.7
+      validate_calibration: 0.1
+      validate_policy: 0.1
+      test: 0.1
+
+train:
+  config: sample_config_optuna.yml
+
+hf_data: 
+  criteo: 'criteo/criteo-uplift'
+
+criteo_metadata:
+  feature_names:
+    - f0
+    - f1
+    - f2
+  treatment_name: treatment
+  effect_name: conversion
+
+data_ingestion:
+  test_mode: True
+  split:
+    size: 0.1
+    shuffle: True
+  nfolds: 5
+  stratify_columns:
+    - treatment
+    - conversion
+
+data_ingestion_small:
+  n_train: 100000
+  n_test: 10000
+  seed: 42069
+  test_mode: True
+  split:
+    size: 0.1
+    shuffle: True
+  nfolds: 5
+  stratify_columns:
+    - treatment
+    - conversion
+
+preprocessing:
+  smote:
+    seed: 42
+
+eda:
+  sample_size: 10000
+  sample_percent: 0.01
+  correlation:
+    threshold: 0.7
+  missingness:
+    temp: 10
+  class:
+    test: 100
+  umap:
+    plot:
+      opacity: 0.5
+    reducer:
+      n_neighbors: 15
+      min_dist: 0.1
+      n_components: 2
+      metric: euclidean
+      random_state: 42
