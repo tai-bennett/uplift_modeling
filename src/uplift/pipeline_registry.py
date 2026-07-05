@@ -4,6 +4,11 @@ from __future__ import annotations
 
 from kedro.pipeline import Pipeline
 
+from .pipelines.ingestion_pipeline import create_ingestion_pipeline
+from .pipelines.preprocessing_pipeline import create_preprocessing_pipeline
+from .pipelines.train_pipeline import create_train_pipeline
+from .pipelines.postprocessing_pipeline import create_postprocessing_pipeline
+
 from .pipelines.data_pipeline import (
     create_data_parquet_pipeline,
     create_data_pipeline,
@@ -23,6 +28,10 @@ def register_pipelines() -> dict[str, Pipeline]:
     """
     # pipelines = find_pipelines(raise_errors=True)
     # pipelines["__default__"] = sum(pipelines.values())
+    ingestion = create_ingestion_pipeline()
+    preprocessing = create_preprocessing_pipeline()
+    training = create_train_pipeline()
+    postprocessing = create_postprocessing_pipeline()
     data = create_data_pipeline()
     data_parquet = create_data_parquet_pipeline()
     data_parquet_small = create_data_small_parquet_pipeline()
@@ -32,7 +41,11 @@ def register_pipelines() -> dict[str, Pipeline]:
     explore = create_explore_pipeline()
     pipelines = {}
     # pipelines["__default__"] = data + eda + train
-    pipelines["__default__"] = data_parquet_small
+    pipelines["__default__"] = ingestion + preprocessing + training + postprocessing
+    pipelines["ingestion"] = ingestion
+    pipelines["preprocessing"] = preprocessing
+    pipelines["postprocessing"] = postprocessing
+    pipelines["training"] = training
     pipelines["parquet_small"] = data_parquet_small
     pipelines["eda"] = data + eda
     pipelines["parquet"] = data_parquet + explore

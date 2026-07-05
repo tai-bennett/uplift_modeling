@@ -4,6 +4,9 @@ from uplift.mlops.training_data import Data
 
 
 class CausalModel(ABC):
+    def __init__(self):
+        self.calibration = None
+        self.model = None
     def _process_train_data(self, data: Data):
         X = data.get_features(as_type="numpy")
         y = data.get_target(as_type="numpy").flatten()

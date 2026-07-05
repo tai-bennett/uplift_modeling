@@ -3,9 +3,19 @@
 # Documentation for this file format can be found in "The Data Catalog"
 # Link: https://docs.kedro.org/en/stable/catalog-data/introduction/#data-catalog
 
+# ============================= datasets ====================================
 criteo_uplift:
   type: kedro_datasets.huggingface.HFDataset
   dataset_name: criteo/criteo-uplift
+
+criteo_metadata:
+  type: yaml.YAMLDataset
+  filepath: data/00_meta/criteo/criteo-uplift.yml
+
+criteo_snapshot:
+  type: polars.LazyPolarsDataset
+  file_format: parquet
+  filepath: data/01_raw/criteo_snapshot.parquet
 
 criteo_train:
   type: polars.LazyPolarsDataset
@@ -27,14 +37,20 @@ data_test:
   file_format: parquet
   filepath: data/03_primary/data_test.parquet
 
-criteo_schema:
-  type: yaml.YAMLDataset
-  filepath: data/08_reporting/criteo_schema.yml
+# ======================== intermediate results =============================
+training_results:
+  type: pickle.PickleDataset
+  filepath: data/08_reporting/current_experiment_results.pkl
 
-criteo_metadata:
-  type: yaml.YAMLDataset
-  filepath: data/00_meta/criteo_metadata.yml
+data_path_dict:
+  type: pickle.PickleDataset
+  filepath: data/08_reporting/current_data_path_dict.pkl
 
 metadata:
   type: yaml.YAMLDataset
-  filepath: data/00_meta/metadata_current.yml
+  filepath: data/00_meta/current_metadata.yml
+# ============================= metadata ====================================
+
+criteo_schema:
+  type: yaml.YAMLDataset
+  filepath: data/08_reporting/criteo_schema.yml

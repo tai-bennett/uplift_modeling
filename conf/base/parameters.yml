@@ -1,3 +1,21 @@
+ingestion:
+  dataset_name: 'criteo/criteo-uplift'
+
+preprocess:
+  simulate:
+    revenue_mu: 5
+    revenue_sigma: 0.8
+  split:
+    type: stratified
+    split_dict:
+      train: 0.7
+      validate_calibration: 0.1
+      validate_policy: 0.1
+      test: 0.1
+
+train:
+  config: sample_config_optuna.yml
+
 hf_data: 
   criteo: 'criteo/criteo-uplift'
 
@@ -35,15 +53,6 @@ data_ingestion_small:
 preprocessing:
   smote:
     seed: 42
-
-train:
-  xlearner:
-    train_params:
-      max_epoch: 1000
-      method: stochastic gradient descent
-  tree:
-    train_params:
-      max_depth: 10
 
 eda:
   sample_size: 10000

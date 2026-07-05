@@ -14,10 +14,14 @@ class MyTLearner(CausalModel):
         # models = GradientBoostingRegressor(**parameters)
         models = SubmodelFactory().create(model_name)(**parameters)
         self.model = TLearner(models=models)
+        self.calibration = None
 
     def __call__(self, model_input: pd.DataFrame) -> np.ndarray:
         X = model_input.to_numpy()
-        return self.effect(X)
+        out = self.effect(X)
+        if self.calibration is not None:
+            out = self.calibration.predict(out)
+        return out
 
     def predict(self, model_input: pd.DataFrame) -> np.ndarray:
         return self.__call__(model_input)
