@@ -1,5 +1,7 @@
 from kedro.pipeline import Pipeline, node
+
 from .training.train import train_from_config
+
 
 def create_train_pipeline() -> Pipeline:
     out = Pipeline(

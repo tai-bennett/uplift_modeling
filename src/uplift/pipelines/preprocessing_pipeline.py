@@ -1,5 +1,7 @@
 from kedro.pipeline import Pipeline, node
-from .preprocessing.preprocessing import fetch_snapshot, split, simulate_monetary
+
+from .preprocessing.preprocessing import fetch_snapshot, simulate_monetary, split
+
 
 def create_preprocessing_pipeline() -> Pipeline:
     out = Pipeline(

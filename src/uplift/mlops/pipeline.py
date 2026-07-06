@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
-import numpy as np
 
-from easydict import EasyDict as edict
+import numpy as np
 
 from uplift.mlops.sampler import SamplerFactory
 from uplift.mlops.splitter import SplitterFactory

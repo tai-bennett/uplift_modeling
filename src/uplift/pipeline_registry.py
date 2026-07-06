@@ -4,11 +4,6 @@ from __future__ import annotations
 
 from kedro.pipeline import Pipeline
 
-from .pipelines.ingestion_pipeline import create_ingestion_pipeline
-from .pipelines.preprocessing_pipeline import create_preprocessing_pipeline
-from .pipelines.train_pipeline import create_train_pipeline
-from .pipelines.postprocessing_pipeline import create_postprocessing_pipeline
-
 from .pipelines.data_pipeline import (
     create_data_parquet_pipeline,
     create_data_pipeline,
@@ -18,6 +13,10 @@ from .pipelines.data_pipeline import (
 # from .pipelines.train_pipeline import create_train_pipeline
 # from .pipelines.train_pipeline import create_train_all_pipeline
 from .pipelines.eda_pipeline import create_eda_pipeline, create_explore_pipeline
+from .pipelines.ingestion_pipeline import create_ingestion_pipeline
+from .pipelines.postprocessing_pipeline import create_postprocessing_pipeline
+from .pipelines.preprocessing_pipeline import create_preprocessing_pipeline
+from .pipelines.train_pipeline import create_train_pipeline
 
 
 def register_pipelines() -> dict[str, Pipeline]:

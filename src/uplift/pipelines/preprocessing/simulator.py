@@ -1,8 +1,8 @@
-import pdb
-import polars as pl
 import numpy as np
+import polars as pl
 
-class Simulator():
+
+class Simulator:
     def __init__(self, revenue_mu=4, revenue_sigma=0.75):
         self.mu = revenue_mu
         self.sigma = revenue_sigma

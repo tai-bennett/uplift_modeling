@@ -1,7 +1,9 @@
-import pdb
-import polars as pl
 import numpy as np
+import polars as pl
+
 from uplift.pipelines.preprocessing.splitter import StratifiedSplitter
+
+
 def test_stratified_splitter():
     n = 1000
     # make sample data
@@ -26,4 +28,4 @@ def test_stratified_splitter():
     out = obj.run(data, split_dict)
 
 
-    
+

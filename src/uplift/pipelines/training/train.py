@@ -1,6 +1,7 @@
+from uplift.config.loaders import get_paths
 from uplift.mlops import utils
 from uplift.mlops.experiment import OptunaExperiment
-from uplift.config.loaders import get_paths
+
 
 def train_from_config(status, config_path):
     if not status:

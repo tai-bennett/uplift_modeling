@@ -1,4 +1,5 @@
 import pdb
+
 from sklearn.isotonic import IsotonicRegression
 
 
@@ -12,7 +13,7 @@ class Calibrator:
         model.calibration = self.model
         return model
 
-    
+
     def fit(self, model, data):
         x = data.select(self.metadata['feature_names']).to_pandas()
         s = model.predict(x)
@@ -28,4 +29,4 @@ class Calibrator:
         self.model.fit(s, r)
 
 
-        
+

@@ -1,5 +1,7 @@
 from kedro.pipeline import Pipeline, node
+
 from .ingestion.ingestion import get_dataset, save_snapshot
+
 
 def create_ingestion_pipeline() -> Pipeline:
     out = Pipeline(

@@ -1,8 +1,5 @@
 from abc import ABC, abstractmethod
 
-import numpy as np
-import polars as pl
-
 from uplift.mlops.training_data import PolarsData
 from uplift.mlops.utils import *
 

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-import numpy as np
+
 from sklearn.model_selection import StratifiedKFold as SKStratifiedKFold
+
 from uplift.mlops.utils import ArtifactStore
 
 

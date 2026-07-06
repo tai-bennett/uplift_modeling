@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 from easydict import EasyDict
 
-from uplift.mlops.serializer import *
+from uplift.mlops.serializer import NumpySerializer, YamlSerializer, PickleSerializer
 
 """
 A codec tells us how certain objects are saved and loaded. For example, indices for folds should be saved as a collection of files name {i}_fold which is a npz dictionary where the dictionary looks like

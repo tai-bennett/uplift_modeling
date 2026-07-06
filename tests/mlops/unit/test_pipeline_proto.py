@@ -1,8 +1,9 @@
 import numpy as np
 import polars as pl
-from uplift.mlops import utils
+
 from uplift.mlops.pipeline import PipelineProto
 from uplift.mlops.training_data import PolarsData
+
 
 def test_pipeline_proto():
     config = {

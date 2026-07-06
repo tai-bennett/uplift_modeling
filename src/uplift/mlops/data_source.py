@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 from uplift.config.loaders import get_paths
 from uplift.mlops import utils
-from uplift.mlops.training_data import *
+from uplift.mlops.training_data import PolarsData
 
 
 class LocalParquet(BaseModel):

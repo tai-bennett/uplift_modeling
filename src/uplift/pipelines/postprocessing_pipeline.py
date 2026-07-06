@@ -1,5 +1,7 @@
 from kedro.pipeline import Pipeline, node
-from .postprocessing.postprocessing import load_model, calibration
+
+from .postprocessing.postprocessing import calibration, load_model
+
 
 def create_postprocessing_pipeline() -> Pipeline:
     out = Pipeline(
