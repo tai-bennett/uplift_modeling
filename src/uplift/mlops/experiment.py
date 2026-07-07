@@ -1,19 +1,26 @@
+"""
+================================================================================
+TITLE: experiment.py
+
+AUTHOR: Duncan Bennett
+
+DESCRIPTION: An OptunaExperiment is an object that handles a collection of
+optuna studies and logs metrics. It's primary function is to interpret the user
+config and execute the studies while logging results with mlflow and optuna.
+================================================================================
+"""
 import mlflow
 import optuna
 import pandas as pd
 from easydict import EasyDict as edict
 from pydantic import TypeAdapter
 
-from uplift.config.loaders import get_paths
-from uplift.mlops.data_source import *
-from uplift.mlops.optuna_utils import OptunaHPBuilder, optuna_to_config
-from uplift.mlops.pipeline import PipelineFactory
-from uplift.mlops.results import ExperimentResults, TuningResults
-from uplift.mlops.search_space import *
-from uplift.mlops.spec import *
-from uplift.mlops.training_data import *
-from uplift.mlops.trial import *
-from uplift.mlops.trial import SingleTrial
+from ..config.loaders import get_paths
+from .data_source import DataSourceFactory, DataSourceSpec
+from .optuna_utils import OptunaHPBuilder, optuna_to_config
+from .pipeline import PipelineFactory
+from .results import ExperimentResults, TuningResults
+from .trial import SingleTrial
 
 
 class OptunaExperiment:

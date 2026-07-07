@@ -1,16 +1,21 @@
-from uplift.mlops.serializer import *
+from uplift.mlops.serializer import (
+    NumpySerializer,
+    PickleSerializer,
+    SerializerFactory,
+    YamlSerializer,
+)
 
 
 def test_serializer_factory():
     factory = SerializerFactory()
     serializer = factory.create("pickle")()
-    assert type(serializer) == PickleSerializer
+    assert type(serializer) is PickleSerializer
 
     serializer = factory.create("yaml")()
-    assert type(serializer) == YamlSerializer
+    assert type(serializer) is YamlSerializer
 
     serializer = factory.create("numpy")()
-    assert type(serializer) == NumpySerializer
+    assert type(serializer) is NumpySerializer
 
 
 def test_serializer_yaml(tmp_path):

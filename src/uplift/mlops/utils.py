@@ -1,3 +1,12 @@
+"""
+================================================================================
+TITLE: utils.py
+AUTHOR: Duncan Bennett
+DESCRIPTION: This file holds several utilities needed for loading data as well
+as the ArtifactStore class.
+================================================================================
+"""
+
 import hashlib
 import json
 import os
@@ -8,9 +17,8 @@ from pathlib import Path
 import polars as pl
 import yaml
 
-from uplift.config.loaders import get_paths
-from uplift.mlops.codec import *
-from uplift.mlops.serializer import *
+from ..config.loaders import get_paths
+from .codec import CodecFactory
 
 
 def load_yml(path):
@@ -52,7 +60,7 @@ class ArtifactStore:
         path.mkdir(parents=True, exist_ok=True)
         if artifact_codec is None:
             with open(path / "artifact.pkl", "wb") as f:
-                pickle.dump(artifact, f)
+                pickle.dump(obj, f)
         else:
             codec = CodecFactory().create(artifact_codec)()
             codec.save(path, obj)
@@ -79,7 +87,7 @@ class ArtifactStore:
                 elif os.path.isdir(full_path):
                     shutil.rmtree(full_path)
             except Exception as e:
-                print(f"Failed to delete file {full_path} due to {e}")
+                raise ValueError(f"Failed to delete file {full_path} due to {e}")
 
     def get(self, super_hash, params, artifact_codec=None):
         # make combined hash

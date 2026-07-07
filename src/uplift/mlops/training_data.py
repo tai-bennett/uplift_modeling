@@ -1,3 +1,14 @@
+"""
+================================================================================
+TITLE: training_data.py
+AUTHOR: Duncan Bennett
+DESCRIPTION: The Data and TrainingData classes are light weight wrappers that go
+around other dataset classes such as polars, pandas and other to allow for a
+uniform interface that the pipeline, components and trial objects can interface
+with
+================================================================================
+"""
+
 import hashlib
 from abc import ABC, abstractmethod
 
@@ -83,6 +94,6 @@ class PolarsData(Data):
 class DataFactory:
     def create(self, data, meta):
         # load metadata (always as yml)
-        if config.type == "polars":
+        if meta['type'] == "polars":
             pass
             # load data

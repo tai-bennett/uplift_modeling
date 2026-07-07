@@ -2,8 +2,6 @@ import pprint
 
 import pandas as pd
 import plotly.express as px
-
-# from umap.umap_ import umap
 import umap
 from easydict import EasyDict as edict
 

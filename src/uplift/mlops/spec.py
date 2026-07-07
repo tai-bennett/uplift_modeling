@@ -1,9 +1,19 @@
+"""
+================================================================================
+TITLE: spec.py
+AUTHOR: Duncan Bennett
+DESCRIPTION: Specs are built on pydantic BaseModel and are used for config data
+validation. In particular, the experiment config notation requires that
+hyperparameters that are to by varied by Optuna must follow the
+OptunaParameterSpec pattern. Other specs are also included.
+================================================================================
+"""
 from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, Field, model_validator
 
 
-# ============================ Custom Specs ======================================
+# ============================ Custom Specs ====================================
 class ChoiceSpec(BaseModel):
     type: Literal["choice"]
     values: list[Any]
@@ -42,7 +52,7 @@ ParameterSpec = Annotated[
 class SearchSpaceConfig(BaseModel):
     hyperparameters: dict[str, ParameterSpec]
 
-# ============================ Optuna Specs ======================================
+# ============================ Optuna Specs ===================================
 
 class OptunaIntegerSpec(BaseModel):
     type: Literal['int']
@@ -60,7 +70,7 @@ class OptunaCategoricalSpec(BaseModel):
     def validate_choices(self):
         choice_type = type(self.choices[0])
         for choice in self.choices:
-            if type(choice) != choice_type:
+            if type(choice) is not choice_type:
                 raise ValueError(f"Choices must has all the same type. Found type {choice_type} and {type(choice)} in choices.")
         return self
 

@@ -5,7 +5,7 @@ import polars as pl
 # Helper imports
 from sklearn.model_selection import train_test_split
 
-from uplift.mlops.models.causal_models.tlearner import *
+from uplift.mlops.models.causal_models.tlearner import MyTLearner
 from uplift.mlops.training_data import PolarsData
 
 
@@ -23,7 +23,7 @@ def test_tlearner():
     }
     model = MyTLearner("xgb_classifier", params)
     model.fit(data)
-    uplift_test = model.eval(data_test["features"])
+    _ = model.eval(data_test["features"])
 
 
 def generate_data():
@@ -53,8 +53,9 @@ def generate_data():
 
     p_control = 1 / (1 + np.exp(-logit_control))
 
+    a, b, c = 0, 1, 2
     true_uplift = np.select(
-        [cluster == 0, cluster == 1, cluster == 2], [0.15, -0.05, 0.30]
+        [cluster == a, cluster == b, cluster == c], [0.15, -0.05, 0.30]
     )
 
     p_treatment = np.clip(p_control + true_uplift, 0.001, 0.999)

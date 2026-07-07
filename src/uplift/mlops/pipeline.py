@@ -1,9 +1,20 @@
+"""
+================================================================================
+TITLE: pipeline.py
+AUTHOR: Duncan Bennett
+DESCRIPTION: The Pipeline object is a major piece of the OptunaExperiment class
+and handles all data related preprocessing. In contrast to preprocess outside
+the OptunaExperiment object, the pipeline preprocessing is dependent on hyper-
+parameters and is involved in the Optuna parameter suggestion process. E.g.
+we may want to tune the model selection according to undersampling ratio.
+================================================================================
+"""
 from abc import ABC, abstractmethod
 
 import numpy as np
 
-from uplift.mlops.sampler import SamplerFactory
-from uplift.mlops.splitter import SplitterFactory
+from .sampler import SamplerFactory
+from .splitter import SplitterFactory
 
 
 class BasePipeline(ABC):

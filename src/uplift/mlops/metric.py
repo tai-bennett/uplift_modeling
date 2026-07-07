@@ -1,3 +1,13 @@
+"""
+================================================================================
+TITLE: metric.py
+
+AUTHOR: Duncan Bennett
+
+DESCRIPTION: Metrics to be evaluated on tuning and training data. Users primary
+interact with the EvaluationData and MetricReport objects.
+================================================================================
+"""
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 

@@ -25,7 +25,7 @@ def test_stratified_splitter():
         'test': 0.1
         }
     obj = StratifiedSplitter(data, meta)
-    out = obj.run(data, split_dict)
+    _ = obj.run(data, split_dict)
 
 
 

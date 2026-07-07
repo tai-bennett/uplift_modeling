@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 
 from uplift.mlops.training_data import PolarsData
-from uplift.mlops.utils import *
+from uplift.mlops.utils import ArtifactStore
+
+from .sampler import Undersampler
 
 
 class BaseIndexer(ABC):

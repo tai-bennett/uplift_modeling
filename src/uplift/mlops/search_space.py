@@ -1,3 +1,15 @@
+"""
+================================================================================
+TITLE: search_space.py
+
+AUTHOR: Duncan Bennett
+NOTES: These modules are deprecated.
+DESCRIPTION: Search space object creates an iterable hyperparameter space that
+allows for grid search tuning.
+================================================================================
+"""
+
+
 import json
 from abc import ABC, abstractmethod
 from itertools import product
@@ -57,7 +69,7 @@ class SearchSpaceFactory:
 
 class HPBuilder:
     def __init__(self, config):
-        if type(config) == EasyDict:
+        if config is EasyDict:
             config = json.loads(json.dumps(config))
         self.built = False
         self.config = config
@@ -86,7 +98,7 @@ class HPBuilder:
             if self._is_parameter_spec(v):
                 self._handle_spec(v)
             # if v is a tree
-            elif type(v) == dict:
+            elif v is dict:
                 self._search(v)
             # if k, v is a name
             self.path.pop()
@@ -155,4 +167,4 @@ if __name__ == "__main__":
 
     hp_space = GridSearchSpace({"depth": g, "path": g2})
     for hp in hp_space:
-        print(hp)
+        pass

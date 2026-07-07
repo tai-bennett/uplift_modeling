@@ -1,13 +1,19 @@
+"""
+================================================================================
+TITLE: eda.py
+
+AUTHOR: Duncan Bennett
+
+DESCRIPTION: An automated eda object 
+================================================================================
+"""
 from easydict import EasyDict as edict
 from pydantic import TypeAdapter
 
-from uplift.config.loaders import get_paths
-from uplift.mlops.data_source import *
-from uplift.mlops.spec import *
-from uplift.mlops.training_data import *
-from uplift.mlops.utils import *
-
+from ..config.loaders import get_paths
 from .analysis import AnalysisFactory
+from .data_source import DataSourceFactory, DataSourceSpec
+from .utils import ArtifactStore
 
 
 class EDA:

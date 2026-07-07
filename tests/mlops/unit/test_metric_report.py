@@ -1,6 +1,6 @@
 import numpy as np
 
-from uplift.mlops.metric import *
+from uplift.mlops.metric import EvaluationData, MetricReport
 
 
 def test_metric_report():
@@ -12,3 +12,4 @@ def test_metric_report():
     metric_names = ["mse", "mae"]
     reporter = MetricReport(metric_names)
     results = reporter.eval(data)
+    assert results is not None

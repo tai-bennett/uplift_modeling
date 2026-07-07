@@ -1,11 +1,21 @@
+"""
+================================================================================
+TITLE: oputna_utils.py
+
+AUTHOR: Duncan Bennett
+
+DESCRIPTION: Optuna utils are primarily focused around translating between the
+optuna hyperparameter set represented by a flat dictionary and the user config
+specified hyperparameter set represented by a nested dictionary.
+================================================================================
+"""
 import copy
 import json
-
+import pdb
 from easydict import EasyDict
 from pydantic import TypeAdapter, ValidationError
 
-from uplift.mlops.parameters import *
-from uplift.mlops.spec import *
+from .spec import OptunaParameterSpec
 
 
 class OptunaHPBuilder:
@@ -31,12 +41,12 @@ class OptunaHPBuilder:
         for k, v in tree.items():
             self.path.append(k)
             # if v is a spec
-            if type(v) == EasyDict:
+            if type(v) is EasyDict:
                 v = json.loads(json.dumps(v))
             if self._is_parameter_spec(v):
                 self._handle_spec(v, trial)
             # if v is a tree
-            elif type(v) == dict:
+            elif type(v) is dict:
                 self._search(v, trial)
             # if k, v is a name
             self.path.pop()
@@ -58,27 +68,27 @@ class OptunaHPBuilder:
         except ValidationError:
             return False
 
-    def _convert_specs(self):
-        for spec_path in self.spec_paths:
-            self._convert_spec(spec_path)
-            self._convert_config_bones(spec_path)
+#    def _convert_specs(self):
+#        for spec_path in self.spec_paths:
+#            self._convert_spec(spec_path)
+#            self._convert_config_bones(spec_path)
 
-    def _convert_spec(self, spec_path):
-        value = self._get_value_from_path(spec_path, self.config)
-        self.generators[self._list_to_str(spec_path)] = GeneratorFactory().create(
-            self.adapter.validate_python(value)
-        )
+#     def _convert_spec(self, spec_path):
+#         value = self._get_value_from_path(spec_path, self.config)
+#         self.generators[self._list_to_str(spec_path)] = GeneratorFactory().create(
+#             self.adapter.validate_python(value)
+#         )
 
-    def _convert_config_bones(self, spec_path):
-        self._set_value_from_path(spec_path, self.config_bones, None)
-
-    def _populate_config_bones(self, params_dict):
-        for (
-            k,
-            v,
-        ) in params_dict.items():
-            path = self._str_to_list(k)
-            self._set_value_from_path(path, self.config_bones, v)
+#     def _convert_config_bones(self, spec_path):
+#         self._set_value_from_path(spec_path, self.config_bones, None)
+#
+#     def _populate_config_bones(self, params_dict):
+#         for (
+#             k,
+#             v,
+#         ) in params_dict.items():
+#             path = self._str_to_list(k)
+#             self._set_value_from_path(path, self.config_bones, v)
 
     def _list_to_str(self, path_list: list[str]) -> str:
         return "->".join(path_list)
@@ -98,7 +108,11 @@ class OptunaHPBuilder:
             value = value[key]
         value[path[-1]] = new_value
 
-def is_parameter_spec(d):
+
+def is_parameter_spec(d: dict) -> bool:
+    """
+    checks if dictionary d is a valid OputnaParameterSpec
+    """
     adapter = TypeAdapter(OptunaParameterSpec)
     try:
         adapter.validate_python(d)
@@ -106,7 +120,8 @@ def is_parameter_spec(d):
     except ValidationError:
         return False
 
-def optuna_to_config(config, params):
+
+def optuna_to_config(config, params) -> dict:
     """
     config: is the original config that has a OptunaParameterSpec at nodes
         that Optuna handled
@@ -118,12 +133,9 @@ def optuna_to_config(config, params):
     """
     if is_parameter_spec(config):
         return params[config['name']]
-    if type(config) == EasyDict:
+    if type(config) is EasyDict:
         config = json.loads(json.dumps(config))
         return {k: optuna_to_config(v, params) for k, v in config.items()}
-    if type(config) == dict:
+    if type(config) is dict:
         return {k: optuna_to_config(v, params) for k, v in config.items()}
     return config
-
-
-
