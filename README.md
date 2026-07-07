@@ -3,10 +3,10 @@
 Uplift modeling is an essential technique for marketing campaigns. The 
 
 ## Highlights
-+ *Uplift Modeling*: tlearner, slearner, xlearner, drlearer, uplift random forest. Leverage isotonic regression for calibration and other techinques for class imbalance scenarios. Evaluation of uplift models using Qini, AUUC
-+ *MLOPS*: Kedro, Optuna and MLFlow
-+ *Industry readiness*: Uplift models have been used for policy learning using simulated monetary data
-+ *Configurable*: Model tuning is controlled by a declarative config. 
++ **Uplift Modeling**: tlearner, slearner, xlearner, drlearer, uplift random forest. Leverage isotonic regression for calibration and other techinques for class imbalance scenarios. Evaluation of uplift models using Qini, AUUC
++ **MLOPS**: Kedro, Optuna and MLFlow
++ **Industry readiness**: Uplift models have been used for policy learning using simulated monetary data
++ **Configurable**: Model tuning is controlled by a declarative config. 
 
 ## Installation
 
