@@ -1,6 +1,11 @@
+"""
+================================================================================
+TITLE: pipeline.py
+AUTHOR: Duncan Bennett
+DESCRIPTION: The Pipeline object is a major piece of the OptunaExperiment class
+================================================================================
+"""
 from abc import ABC, abstractmethod
-
-from uplift.mlops.spec import *
 
 
 class ParameterGenerator(ABC):

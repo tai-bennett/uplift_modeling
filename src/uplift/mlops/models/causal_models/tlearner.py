@@ -1,4 +1,6 @@
 # Main imports
+
+import mlflow.pyfunc
 import numpy as np
 import pandas as pd
 from econml.metalearners import TLearner
@@ -22,8 +24,11 @@ class MyTLearner(CausalModel):
         if self.calibration is not None:
             out = self.calibration.predict(out)
         return out
-
-    def predict(self, model_input: pd.DataFrame) -> np.ndarray:
+    def predict(self,
+                model_input: pd.DataFrame,
+                context: mlflow.pyfunc.PythonModelContext = None,
+                params: dict | None = None
+                ) -> np.ndarray:
         return self.__call__(model_input)
 
     def fit(self, data):

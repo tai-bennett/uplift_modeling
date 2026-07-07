@@ -13,4 +13,4 @@ def objective(trial):
     config = config['studies'][0]
     hp = OptunaHPBuilder(config)
     out = hp.get_parameters(trial)
-    return 0
+    return len(out)

@@ -1,5 +1,15 @@
+"""
+================================================================================
+TITLE: evaluator.py
+
+AUTHOR: Duncan Bennett
+
+DESCRIPTION: The Evaluator handles generating certain values so that different
+evaluation metrics may be computed. (E.g. since MSE and QINI needed different
+inputs, then the Evaluator can handle fetching those values or return errors)
+================================================================================
+"""
 from .metric import EvaluationData
-from .models import *
 
 
 class Evaluator:

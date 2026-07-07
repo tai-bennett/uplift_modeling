@@ -1,17 +1,31 @@
+"""
+================================================================================
+TITLE: codec.py
+
+AUTHOR: Duncan Bennett
+
+DESCRIPTION: The Codec class is a strategy of how to save certain objects and
+structures. For example, the FoldIndicesCodec uses the NumpySerializer to save
+collections of indices (such as cv fold indices) in the appropriate way.
+
+NOTES: A codec tells us how certain objects are saved and loaded. For example, indices for folds should be saved as a collection of files name {i}_fold which is a npz dictionary where the dictionary looks like
+{'train_idx': np.array(...), 'test_idx': np.array(...)}
+which is a flat dictionary for fold_i. 
+Metadata dictionaries are saved differently, model weights are saved differently etc.
+================================================================================
+"""
 import json
 from abc import ABC, abstractmethod
 
 import numpy as np
 from easydict import EasyDict
 
-from uplift.mlops.serializer import *
-
-"""
-A codec tells us how certain objects are saved and loaded. For example, indices for folds should be saved as a collection of files name {i}_fold which is a npz dictionary where the dictionary looks like
-{'train_idx': np.array(...), 'test_idx': np.array(...)}
-which is a flat dictionary for fold_i. 
-Metadata dictionaries are saved differently, model weights are saved differently etc.
-"""
+from .serializer import (
+    NumpySerializer,
+    PickleSerializer,
+    PlotlySerializer,
+    YamlSerializer,
+)
 
 
 class Codec(ABC):

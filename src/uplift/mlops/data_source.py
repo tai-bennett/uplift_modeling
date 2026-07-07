@@ -1,3 +1,12 @@
+"""
+================================================================================
+TITLE: data_source.py
+
+AUTHOR: Duncan Bennett
+
+DESCRIPTION: Strategies for loading different types of dataset
+================================================================================
+"""
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Annotated, Literal
@@ -5,9 +14,10 @@ from typing import Annotated, Literal
 import polars as pl
 from pydantic import BaseModel, Field
 
-from uplift.config.loaders import get_paths
 from uplift.mlops import utils
-from uplift.mlops.training_data import *
+
+from ..config.loaders import get_paths
+from .training_data import PolarsData
 
 
 class LocalParquet(BaseModel):

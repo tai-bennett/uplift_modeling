@@ -1,7 +1,17 @@
+"""
+================================================================================
+TITLE: splitter.py
+AUTHOR: Duncan Bennett
+DESCRIPTION: The Splitter object is a Pipeline object component that handles
+splitting of data in the context of tuning. This can be cross validation and
+its variants, bootstrapping or similar algorithms.
+================================================================================
+"""
 from abc import ABC, abstractmethod
-import numpy as np
+
 from sklearn.model_selection import StratifiedKFold as SKStratifiedKFold
-from uplift.mlops.utils import ArtifactStore
+
+from .utils import ArtifactStore
 
 
 class BaseSplitter(ABC):

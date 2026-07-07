@@ -1,8 +1,17 @@
+"""
+================================================================================
+TITLE: metric.py
+
+AUTHOR: Duncan Bennett
+
+DESCRIPTION: Metrics to be evaluated on tuning and training data. Users primary
+interact with the EvaluationData and MetricReport objects.
+================================================================================
+"""
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 import numpy as np
-import mlflow
 from sklift.metrics import qini_auc_score, uplift_auc_score
 
 

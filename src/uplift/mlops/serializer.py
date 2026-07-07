@@ -1,3 +1,13 @@
+"""
+================================================================================
+TITLE: serializer.py
+AUTHOR: Duncan Bennett
+DESCRIPTION: Serializers are strategies for saving certain file formats. It is
+used by the Codec class which decides how to save certain objects and
+structures. For example, the FoldIndicesCodec uses the NumpySerializer to save
+collections of indices (such as cv fold indices) in the appropriate way.
+================================================================================
+"""
 import pickle
 from abc import ABC, abstractmethod
 
@@ -69,4 +79,6 @@ class SerializerFactory:
             return NumpySerializer
         if name == "yaml":
             return YamlSerializer
+        if name == 'plotly':
+            return PlotlySerializer
         raise ValueError(f"Unknown Serializer type {name}")

@@ -1,4 +1,4 @@
-from uplift.mlops.models import *
+from uplift.mlops.models import ModelFactory
 
 
 def test_model_factory():
@@ -6,4 +6,4 @@ def test_model_factory():
     model_name = "sk_gradient_boosting_regressor"
     params = {"n_estimators": 12, "max_depth": 6, "min_samples_leaf": 5}
 
-    model = ModelFactory().create(causal_model_name)(model_name, params)
+    _ = ModelFactory().create(causal_model_name)(model_name, params)

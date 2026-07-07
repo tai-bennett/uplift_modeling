@@ -1,4 +1,4 @@
-from uplift.mlops.utils import *
+from uplift.mlops.utils import ArtifactStore
 
 
 def test_artifact_store(tmp_path):

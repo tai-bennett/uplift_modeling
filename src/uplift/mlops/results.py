@@ -1,3 +1,11 @@
+"""
+================================================================================
+TITLE: results.py
+AUTHOR: Duncan Bennett
+DESCRIPTION: These are simple @dataclass objects that hold results from tuning
+training etc
+================================================================================
+"""
 from dataclasses import dataclass
 
 from optuna import Trial

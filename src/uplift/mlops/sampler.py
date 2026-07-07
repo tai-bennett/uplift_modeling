@@ -1,10 +1,20 @@
+"""
+================================================================================
+TITLE: sampler.py
+AUTHOR: Duncan Bennett
+DESCRIPTION: The Sampler object is a component for a Pipeline object that can
+handle subsampling algorithms like under and over sampling for class imbalance
+situtation.
+================================================================================
+"""
+
 from abc import ABC, abstractmethod
 
 import numpy as np
 import polars as pl
 
-from uplift.mlops.training_data import PolarsData
-from uplift.mlops.utils import *
+from .training_data import PolarsData
+from .utils import ArtifactStore
 
 
 class BaseSampler(ABC):
@@ -46,7 +56,7 @@ class Undersampler(BaseSampler):
     def _generate_splits(self, indices, data):
         input_indices = indices.copy()
         indices = indices['train']
-        if type(data) != PolarsData:
+        if type(data) is not PolarsData:
             raise NotImplementedError(
                 f"Undersampler not implemented for data type {type(data)}"
             )
@@ -54,14 +64,14 @@ class Undersampler(BaseSampler):
         for fold_idx, data_idx in indices.items():
             idx = data_idx["train"]
             current_df = data[idx]
-            value_counts = data.value_counts(data.metadata["target_name"])
+            value_counts = current_df.value_counts(data.metadata["target_name"])
             # compute major class sample probability
-            prob, m, major_class, minor_class = self._compute_sampling_prob(
+            _, m, major_class, minor_class = self._compute_sampling_prob(
                 value_counts, data.metadata["target_name"]
             )
             # compute subset of indices
             subindices = self._subsample_indices(
-                idx, data, major_class, minor_class, count=m
+                data, major_class, minor_class, count=m
             )
             indices[fold_idx]["train"] = subindices.flatten()
         data.data = data.data.drop("row_idx")
@@ -83,7 +93,7 @@ class Undersampler(BaseSampler):
         m = np.floor(minority["count"] / self.ratio)
         return p, m, majority[target_col], minority[target_col]
 
-    def _subsample_indices(self, idx, data, major, minor, count=None, p=None):
+    def _subsample_indices(self, data, major, minor, count=None, p=None):
         if p is not None:
             raise NotImplementedError(
                 "Subsampling with probability not implemented for Undersampler."

@@ -1,11 +1,8 @@
-import pdb
-import numpy as np
 import polars as pl
-from datasets import DatasetDict, load_dataset
-from easydict import EasyDict as edict
-from sklearn.model_selection import StratifiedKFold
+from datasets import load_dataset
 
 from uplift.config.loaders import get_paths
+
 
 def get_dataset(params):
     try:
@@ -14,7 +11,8 @@ def get_dataset(params):
         test_status = False
     data_name = params['dataset_name']
     if test_status:
-        ds = load_dataset(data_name, split='train[:1000]')
+        ds = load_dataset(data_name, split='train[:7000]')
+        ds = {'train': ds}
     else:
         ds = load_dataset(data_name)
     return ds

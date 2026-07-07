@@ -1,9 +1,11 @@
-import pdb
 import polars as pl
-from .splitter import SplitterFactory
-from .simulator import Simulator
+
 from uplift.config.loaders import get_paths
 from uplift.utils import load_yml
+
+from .simulator import Simulator
+from .splitter import SplitterFactory
+
 
 def fetch_snapshot(dataset_name):
     root = get_paths()['raw']
