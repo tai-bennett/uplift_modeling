@@ -11,4 +11,4 @@ Uplift modeling is an essential technique for marketing campaigns. The
 ## Installation
 
 ## References
-+ [[https://link.springer.com/article/10.1007/s10618-023-00917-9][Exploring uplift modeling with high class imbalance (Nyberg, Klami)]]
++ [Exploring uplift modeling with high class imbalance (Nyberg, Klami)](https://link.springer.com/article/10.1007/s10618-023-00917-9)
