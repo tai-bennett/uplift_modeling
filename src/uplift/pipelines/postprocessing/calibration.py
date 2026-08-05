@@ -10,13 +10,13 @@ class Calibrator:
 
     def run(self, model, data):
         self.fit(model, data)
-        model.calibration = self.model
+        model.set_calibrator(self.model)
         return model
 
 
     def fit(self, model, data):
         x = data.select(self.metadata['feature_names']).to_pandas()
-        s = model.predict(x)
+        s = model.uplift_model.predict(x)
         y = data.select(self.metadata['target_name']).to_numpy()
         t = data.select(self.metadata['treatment_name']).to_numpy()
 
@@ -25,7 +25,6 @@ class Calibrator:
         r = y * (t - p_t) / (p_t * (1 - p_t))
         # r = (y - t) / (p_t * (1 - p_t))
         r = r.flatten()
-        pdb.set_trace()
         self.model.fit(s, r)
 
 

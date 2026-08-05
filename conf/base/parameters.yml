@@ -14,7 +14,7 @@ preprocess:
       test: 0.1
 
 train:
-  config: sample_config_optuna.yml
+  config: config_train.yml
 
 hf_data: 
   criteo: 'criteo/criteo-uplift'

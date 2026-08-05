@@ -1,7 +1,10 @@
 # Main imports
 # Helper imports
+import pdb
 from econml.dr import DRLearner
-
+import mlflow
+import pandas as pd
+import numpy as np
 from .base_causal_model import CausalModel
 from .submodel_factory import SubmodelFactory
 
@@ -17,6 +20,7 @@ class MyDRLearner(CausalModel):
         final_parameters,
         parameters,
     ):
+        self.calibration = None
         model_effect = SubmodelFactory().create(model_effect)(**effect_parameters)
         model_propensity = SubmodelFactory().create(model_propensity)(
             **propensity_parameters
@@ -34,9 +38,19 @@ class MyDRLearner(CausalModel):
         X, y, T = self._process_train_data(data)
         self.model.fit(y, T, X=X)
 
-    def __call__(self, X):
-        return self.effect(X)
+    def __call__(self, model_input: pd.DataFrame) -> np.ndarray:
+        X = model_input.to_numpy()
+        out = self.effect(X)
+        if self.calibration is not None:
+            out = self.calibration.predict(out)
+        return out
 
+    def predict(self,
+                model_input: pd.DataFrame,
+                context: mlflow.pyfunc.PythonModelContext = None,
+                params: dict | None = None
+                ) -> np.ndarray:
+        return self.__call__(model_input)
 
     def effect(self, X):
         """
@@ -51,3 +65,6 @@ class MyDRLearner(CausalModel):
         but f.eval for certain submodels behave differently, could be predicted classed or class probability?
         """
         return self.model.effect(X)
+
+    def calibration_setter(self, calibration):
+        self.calibration = calibration

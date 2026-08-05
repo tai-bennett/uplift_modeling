@@ -1,6 +1,6 @@
 from kedro.pipeline import Pipeline, node
 
-from .postprocessing.postprocessing import calibration, load_model
+from .postprocessing.postprocessing import calibration, load_model, policy_method
 
 
 def create_postprocessing_pipeline() -> Pipeline:
@@ -15,8 +15,14 @@ def create_postprocessing_pipeline() -> Pipeline:
             node(
                 func=calibration,
                 inputs=["model", "data_path_dict", 'metadata'],
-                outputs="calibration_model",
+                outputs="calibrated_model",
                 name="postprocessing_calibration"
+            ),
+            node(
+                func=policy_method,
+                inputs=["calibrated_model", "data_path_dict", 'metadata'],
+                outputs="candidate_policy_model",
+                name="postprocessing_policy"
             ),
         ]
     )

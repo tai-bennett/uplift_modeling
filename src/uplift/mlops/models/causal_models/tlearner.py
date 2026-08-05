@@ -1,5 +1,5 @@
 # Main imports
-
+import pdb
 import mlflow.pyfunc
 import numpy as np
 import pandas as pd
@@ -39,6 +39,8 @@ class MyTLearner(CausalModel):
         """
         returns the uplift
         """
+        if len(self.model.models) != 2:
+            pdb.set_trace()
         p_treat = self.model.models[1].predict_proba(X)[:, 1]
         p_control = self.model.models[0].predict_proba(X)[:, 1]
         return p_treat - p_control

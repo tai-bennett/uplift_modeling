@@ -20,7 +20,7 @@ def create_preprocessing_pipeline() -> Pipeline:
             ),
             node(
                 func=split,
-                inputs=["params:ingestion.dataset_name", "ds_preprocessed", "metadata", "params:preprocess.split"],
+                inputs=["params:ingestion.dataset_name", "ds_simulated", "metadata", "params:preprocess.split"],
                 outputs=["data_path_dict", "status"],
                 name="preprocessing_split"
             ),
