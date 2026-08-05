@@ -1,5 +1,8 @@
 experiment:
-  name: test_optuna_mlflow_experiment
+  name: uplift_experiment_2
+
+optuna:
+  n_trials: 20
 
 data:
   type: parquet
@@ -50,32 +53,32 @@ trial_config:
     - auuc
 
 studies:
-  #   - name: test_tlearner
-  #     model: tlearner
-  #     parameters:
-  #       model_name: xgb_classifier
-  #       parameters:
-  #         n_estimators:
-  #           type: int
-  #           name: n_estimators
-  #           low: 90
-  #           high: 120
-  #           step: 10
-  #         max_depth:
-  #           name: max_depth
-  #           type: int
-  #           low: 5
-  #           high: 8
-  #         learning_rate:
-  #           name: learning_rate
-  #           type: categorical
-  #           choices:
-  #             - 1
-  #         objective:
-  #           name: objective
-  #           type: categorical
-  #           choices:
-  #             - binary:logistic
+  - name: test_tlearner
+    model: tlearner
+    parameters:
+      model_name: xgb_classifier
+      parameters:
+        n_estimators:
+          type: int
+          name: n_estimators
+          low: 90
+          high: 120
+          step: 10
+        max_depth:
+          name: max_depth
+          type: int
+          low: 5
+          high: 8
+        learning_rate:
+          name: learning_rate
+          type: categorical
+          choices:
+            - 1
+        objective:
+          name: objective
+          type: categorical
+          choices:
+            - binary:logistic
   - name: test_drlearner
     model: drlearner
     parameters:
@@ -85,13 +88,13 @@ studies:
           type: int
           name: n_estimators_effect
           low: 100
-          high: 110
+          high: 200
           step: 10
         max_depth:
           name: max_depth_effect
           type: int
-          low: 4
-          high: 6
+          low: 3
+          high: 8
         learning_rate:
           name: learning_rate_effect
           type: categorical
@@ -109,13 +112,13 @@ studies:
           type: int
           name: n_estimators_prop
           low: 100
-          high: 110
+          high: 200
           step: 10
         max_depth:
           name: max_depth_prop
           type: int
-          low: 4
-          high: 6
+          low: 3
+          high: 8
         learning_rate:
           name: learning_rate_prop
           type: categorical
@@ -133,13 +136,13 @@ studies:
           type: int
           name: n_estimators_final
           low: 100
-          high: 110
+          high: 200
           step: 10
         max_depth:
           name: max_depth_final
           type: int
-          low: 4
-          high: 6
+          low: 3
+          high: 8
         learning_rate:
           name: learning_rate_final
           type: categorical

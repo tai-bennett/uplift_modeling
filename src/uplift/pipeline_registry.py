@@ -17,6 +17,7 @@ from .pipelines.ingestion_pipeline import create_ingestion_pipeline
 from .pipelines.postprocessing_pipeline import create_postprocessing_pipeline
 from .pipelines.preprocessing_pipeline import create_preprocessing_pipeline
 from .pipelines.train_pipeline import create_train_pipeline
+from .pipelines.deployment_gate_pipeline import create_deployment_gate_pipeline
 
 
 def register_pipelines() -> dict[str, Pipeline]:
@@ -34,13 +35,14 @@ def register_pipelines() -> dict[str, Pipeline]:
     data = create_data_pipeline()
     data_parquet = create_data_parquet_pipeline()
     data_parquet_small = create_data_small_parquet_pipeline()
+    deployment_gate = create_deployment_gate_pipeline()
     # train_all = create_train_all_pipeline()
     # train = create_train_pipeline()
     eda = create_eda_pipeline()
     explore = create_explore_pipeline()
     pipelines = {}
     # pipelines["__default__"] = data + eda + train
-    pipelines["__default__"] = ingestion + preprocessing + training + postprocessing
+    pipelines["__default__"] = ingestion + preprocessing + training + postprocessing + deployment_gate
     pipelines["ingestion"] = ingestion
     pipelines["preprocessing"] = preprocessing
     pipelines["postprocessing"] = postprocessing
@@ -49,6 +51,7 @@ def register_pipelines() -> dict[str, Pipeline]:
     pipelines["eda"] = data + eda
     pipelines["parquet"] = data_parquet + explore
     pipelines["explore"] = explore
+    pipelines["deployment_gate"] = deployment_gate
     # pipelines["hf"] = data_hf
     # pipelines["ingestion_train_all"] = data_parquet + train_all
     # pipelines["train_all"] = train_all

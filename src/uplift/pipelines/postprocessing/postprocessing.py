@@ -1,12 +1,16 @@
+import pdb
 import mlflow
 import polars as pl
 
 from .calibration import Calibrator
-from .policy import Policy
+from .policy import PolicySelection
+from .policymodel import PolicyModel
+
 
 
 def load_model(training_results):
     model = mlflow.pyfunc.load_model(training_results.model_uri)
+    model = PolicyModel(model)
     return model
 
 def calibration(model, data_path_dict, metadata):
@@ -31,8 +35,8 @@ def policy_method(model, data_path_dict, metadata):
     if data is None:
         return model
     else:
-        policy = Policy(metadata)
-        model = policy.run(model, data)
+        policy = PolicySelection(metadata)
+        model = policy.fit(model, data)
         return model
 
 

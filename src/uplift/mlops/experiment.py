@@ -85,7 +85,7 @@ class OptunaExperiment:
             study_name=self.current_config['study']['name'],
             direction='maximize'
         )
-        study.optimize(self.mlflow_objective, n_trials=3)
+        study.optimize(self.mlflow_objective, n_trials=self.config.optuna.n_trials)
         best_params = study.best_trial.params
 
         # best_model_config = optuna_to_config(self.current_study_config.copy(), best_params)
